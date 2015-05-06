@@ -10,7 +10,7 @@ fi
 
 cd /var/www/html
 
-tee -a index.html <<EOF
+tee index.html <<EOF
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
  <html>
  <head>
