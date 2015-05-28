@@ -57,42 +57,8 @@ EOF
 #Need to get the SLL certificate from the Chef server
 knife ssl fetch https://jmchefserver.cloudapp.net/organizations/mayo -c /etc/chef/client.rb
 
-# Liberty Profile
-tee defaultServer.json <<EOF
-{
-	"wlp": {
-		"servers": {
-			"defaultServer": {
-				"enabled": true,
-				"serverName": "defaultServer",
-				"description": "Default Server",
-				"featureManager": {
-					"feature": ["jsp-2.2",
-					"jdbc-4.0",
-					"jpa-2.0",
-					"adminCenter-1.0"]
-				},
-				"httpEndpoint": {
-					"id": "defaultHttpEndpoint",
-					"host": "*",
-					"httpPort": "9080",
-					"httpsPort": "9443"
-				},
-				"quickStartSecurity": {
-					"userName": "admin",
-					"userPassword": "admin"
-				},
-				"keyStore": {
-					"id": "defaultKeyStore",
-					"password": "Liberty"
-				}
-			}
-		}
-	}
-}
-EOF
 
 #Install Websphere Liberty Profile
-chef-client -r "recipe[wlp]","recipe[wlp::serverconfig]" -j defaultServer.json
+chef-client -r "recipe[wlp]"
 #restore stdout and stderr
 #exec 1>&3 2>&4

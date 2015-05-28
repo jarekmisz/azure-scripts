@@ -8,6 +8,7 @@ if [ ! -d "$WLP_BASE_DIR" ]; then
  echo "Liberty not installed in $WLP_BASE_DIR...Exiting script." 
  exit 1
 fi
+yum -y install screen
 #Install the sample app and its dependencies
 cd $WLP_BASE_DIR
 wget "$FILE_REPO_URI/install_images/mongodbsample/mongoDBSample.jar"
