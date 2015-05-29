@@ -3,31 +3,40 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "newStorageAccountName": {
-      "type": "String"
+      "type": "String",
+	  "defaultValue": "jmlibertysg"
     },
     "newDomainName": {
-      "type": "String"
+      "type": "String",
+	  "defaultValue": "jmliberty"
     },
     "newVirtualNetworkName": {
-      "type": "String"
+      "type": "String",
+	  "defaultValue": "jmliberty"
     },
     "vnetAddressSpace": {
       "type": "String"
     },
     "hostName": {
-      "type": "String"
+      "type": "String",
+	  "defaultValue": "jmliberty"
     },
     "userName": {
-      "type": "String"
+      "type": "String",
+	  "defaultValue": "jarek"
     },
+
     "password": {
       "type": "SecureString"
     },
     "location": {
-      "type": "String"
+      "type": "String",
+	  "defaultValue": "uswest"
     },
+
     "hardwareSize": {
-      "type": "String"
+      "type": "String",
+	  "defaultValue": "Standard_A2"
     }
   },
   "resources": [
@@ -89,7 +98,14 @@
               "privatePort": 22,
               "publicPort": null,
               "protocol": "tcp"
-            }
+            },
+				{
+					"enableDirectServerReturn": "False",
+					"endpointName": "http",
+					"privatePort": 9121,
+					"publicPort": 9121,
+					"protocol": "tcp"
+				}
           ]
         },
         "hardwareProfile": {
@@ -117,6 +133,38 @@
         "[concat('Microsoft.ClassicCompute/domainNames/', parameters('newDomainName'))]",
         "[concat('Microsoft.ClassicNetwork/virtualNetworks/', parameters('newVirtualNetworkName'))]"
       ]
-    }
+    },
+    	{
+		"type": "Microsoft.Compute/virtualMachines/extensions",
+		"name": "[concat(parameters('hostName'),'/wlpinstall')]",
+		"apiVersion": "2015-05-01-preview",
+		"location": "[parameters('location')]",
+		"dependsOn": ["[concat('Microsoft.ClassicCompute/virtualMachines/', parameters('hostName'))]"],
+		"properties": {
+			"publisher": "Microsoft.OSTCExtensions",
+			"type": "CustomScriptForLinux",
+			"typeHandlerVersion": "1.2",
+			"settings": {
+				"fileUris": ["https://raw.github.com/jarekmisz/azure-scripts/master/web-pattern/wlpinstall.sh"],
+				"commandToExecute": "bash wlpinstall.sh"
+			}
+		}
+	},
+	{
+		"type": "Microsoft.Compute/virtualMachines/extensions",
+		"name": "[concat(parameters('vmName'),'/sampleinstall')]",
+		"apiVersion": "2015-05-01-preview",
+		"location": "[parameters('location')]",
+		"dependsOn": ["[concat('Microsoft.Compute/virtualMachines/',parameters('vmName'),'/extensions/wlpinstall')]"],
+		"properties": {
+			"publisher": "Microsoft.OSTCExtensions",
+			"type": "CustomScriptForLinux",
+			"typeHandlerVersion": "1.2",
+			"settings": {
+				"fileUris": ["https://raw.github.com/jarekmisz/azure-scripts/master/web-pattern/sampleinstall.sh"],
+				"commandToExecute": "bash sampleinstall.sh"
+			}
+		}
+	}
   ]
 }

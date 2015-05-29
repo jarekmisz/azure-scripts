@@ -180,7 +180,7 @@
 					"enableDirectServerReturn": "False",
 					"endpointName": "SSH",
 					"privatePort": 22,
-					"publicPort": null,
+					"publicPort": 22,
 					"protocol": "tcp"
 				},
 				{
