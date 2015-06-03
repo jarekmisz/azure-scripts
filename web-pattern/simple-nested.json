@@ -1,0 +1,106 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01-preview/deploymentTemplate.json",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"dnsNameForPublicIP": {
+			"type": "string",
+			"defaultValue": "jmnested"
+		},
+
+		"location": {
+			"type": "String",
+			"defaultValue": "westus"
+		},
+
+		"publicIPAddressName": {
+			"type": "string",
+			"defaultValue": "jmnestedPublicIP"
+		},
+		"virtualNetworkName": {
+			"type": "string",
+			"defaultValue": "jmnestedVNET"
+		},
+		"nicName": {
+			"type": "string",
+			"defaultValue": "jmnestedNIC"
+		}
+
+		},
+	"variables": {
+		"addressPrefix": "10.0.0.0/16",
+		"subnet1Name": "Subnet-1",
+		"subnet2Name": "Subnet-2",
+		"subnet1Prefix": "10.0.0.0/24",
+		"subnet2Prefix": "10.0.1.0/24",
+		"publicIPAddressType": "Dynamic",
+		"vnetID": "[resourceId('Microsoft.Network/virtualNetworks',parameters('virtualNetworkName'))]",
+		"subnet1Ref": "[concat(variables('vnetID'),'/subnets/',variables('subnet1Name'))]"
+	},
+	"resources": [{
+		"name": "shared-resources",
+		"type": "Microsoft.Resources/deployments",
+		"apiVersion": "2015-05-01-preview",
+		"properties": {
+			"mode": "Incremental",
+			"templateLink": {
+				"uri": ["https://raw.github.com/jarekmisz/azure-scripts/master/web-pattern/shared-resources.json"],
+				"contentVersion": "1.0.0.0"
+			},
+			"parameters": {
+				"publicIPAddressName": {
+					"value": "[parameters('publicIPAddressName')]"
+				},
+				"dnsNameForPublicIP": {
+					"value": "[parameters('dnsNameForPublicIP')]"
+				}
+			}
+		}
+	},
+	{
+		"apiVersion": "2015-05-01-preview",
+		"type": "Microsoft.Network/virtualNetworks",
+		"name": "[parameters('virtualNetworkName')]",
+		"location": "[parameters('location')]",
+		"properties": {
+			"addressSpace": {
+				"addressPrefixes": ["[variables('addressPrefix')]"]
+			},
+			"subnets": [{
+				"name": "[variables('subnet1Name')]",
+				"properties": {
+					"addressPrefix": "[variables('subnet1Prefix')]"
+				}
+			},
+			{
+				"name": "[variables('subnet2Name')]",
+				"properties": {
+					"addressPrefix": "[variables('subnet2Prefix')]"
+				}
+			}]
+		}
+	},
+	{
+		"apiVersion": "2015-05-01-preview",
+		"type": "Microsoft.Network/networkInterfaces",
+		"name": "[parameters('nicName')]",
+		"location": "[parameters('location')]",
+		"dependsOn": ["[concat('Microsoft.Network/publicIPAddresses/', parameters('publicIPAddressName'))]",
+		"[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]"],
+		"properties": {
+			"ipConfigurations": [{
+				"name": "ipconfig1",
+				"properties": {
+					"privateIPAllocationMethod": "Dynamic",
+					"publicIPAddress": {
+						"id": "[resourceId('Microsoft.Network/publicIPAddresses',parameters('publicIPAddressName'))]"
+					},
+					"subnet": {
+						"id": "[variables('subnet1Ref')]"
+					}
+				}
+			}]
+		}
+	}
+]
+}
+

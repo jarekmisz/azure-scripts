@@ -217,7 +217,7 @@
 			"typeHandlerVersion": "1.2",
 			"settings": {
 				"fileUris": ["https://raw.github.com/jarekmisz/azure-scripts/master/web-pattern/sampleinstall-with-parms.sh"],
-				"commandToExecute": "[concat('bash sampleinstall-with-parms.sh -m ', reference(variables('mongodbPublicIPID')).Properties.DnsSettings.Fqdn)]"
+				"commandToExecute": "[concat('bash sampleinstall-with-parms.sh -m ', 'jmmongodb.westus.cloudapp.azure.com')]"
 			}
 		}
 	}]

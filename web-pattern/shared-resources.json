@@ -8,7 +8,7 @@
 		},
 		"dnsNameForPublicIP": {
 			"type": "string",
-			"defaultValue": "jmliberty"
+			"defaultValue": "jmsharedresources"
 		}
 	},
 	"variables": {
