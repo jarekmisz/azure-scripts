@@ -1,0 +1,7 @@
+{
+  "itemDisplayName": "Sample App on Libery and mongoDb replica set",
+  "description": "This template deploys a sample Java App on Liberty Profile backed by a highly available MongoDB installation on Ubuntu and CentOS virtual machines",
+  "summary": "This template deploys a multi-server WAS Liberty Profile and MongoDB deployment on Ubuntu and CentOS virtual machines",
+  "githubUsername": "Jarek at Mayo.edu",
+  "dateUpdated": "2015-06-09"
+}
