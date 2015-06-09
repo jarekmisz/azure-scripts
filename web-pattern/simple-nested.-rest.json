@@ -32,17 +32,18 @@
 				"subnet1Prefix": "10.0.0.0/24",
 				"subnet2Prefix": "10.0.1.0/24",
 				"publicIPAddressType": "Dynamic",
+				"sharedTemplateUrl": "https://raw.github.com/jarekmisz/azure-scripts/master/web-pattern/shared-resources.json",
 				"vnetID": "[resourceId('Microsoft.Network/virtualNetworks',parameters('virtualNetworkName'))]",
 				"subnet1Ref": "[concat(variables('vnetID'),'/subnets/',variables('subnet1Name'))]"
 			},
 			"resources": [{
 				"name": "shared-resources",
 				"type": "Microsoft.Resources/deployments",
-				"apiVersion": "2015-05-01-preview",
+				"apiVersion": "2015-01-01",
 				"properties": {
 					"mode": "Incremental",
 					"templateLink": {
-						"uri": ["https://raw.github.com/jarekmisz/azure-scripts/master/web-pattern/shared-resources.json"],
+						"uri": "[variables('sharedTemplateUrl')]",
 						"contentVersion": "1.0.0.0"
 					},
 					"parameters": {
@@ -83,8 +84,7 @@
 				"type": "Microsoft.Network/networkInterfaces",
 				"name": "[parameters('nicName')]",
 				"location": "[parameters('location')]",
-				"dependsOn": ["[concat('Microsoft.Network/publicIPAddresses/', parameters('publicIPAddressName'))]",
-				"[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]"],
+				"dependsOn": ["[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]"],
 				"properties": {
 					"ipConfigurations": [{
 						"name": "ipconfig1",
@@ -102,9 +102,6 @@
 			}]
 		},
 		"parameters": {
-			"adminPassword": {
-				"value": "Temp4now"
-			}
 		},
 		"mode": "Incremental"
 	}

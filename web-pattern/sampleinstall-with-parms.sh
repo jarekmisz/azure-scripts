@@ -121,9 +121,9 @@ cd $WLP_BASE_DIR
 wget "$FILE_REPO_URI/install_images/mongodbsample/mongoDBSample.jar"
 printf '\n\n' | java -jar mongoDBSample.jar
 #Fix the server.xml
-sed -i 's/id="defaultHttpEndpoint"/id="defaultHttpEndpoint" host="*"/g' "$WLP_BASE_DIR/wlp/usr/servers/mongoDBSample/server.xml"
+#sed -i 's/id="defaultHttpEndpoint"/id="defaultHttpEndpoint" host="*"/g' "$WLP_BASE_DIR/wlp/usr/servers/mongoDBSample/server.xml"
 sed -i "s/hostNames=\"localhost\"/hostNames=\"$MONGODBHOST\"/g" "$WLP_BASE_DIR/wlp/usr/servers/mongoDBSample/server.xml"
 cd wlp/bin
 screen -S mongoDBSample -d -m ./server run mongoDBSample
-echo "MongoDB sample running at http://$HOSTNAME.cloudapp.net:9121/mongoDBApp"
+echo "MongoDB sample running at http://$HOSTNAME:9121/mongoDBApp"
  

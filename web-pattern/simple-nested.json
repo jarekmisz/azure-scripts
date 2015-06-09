@@ -39,7 +39,7 @@
 	"resources": [{
 		"name": "shared-resources",
 		"type": "Microsoft.Resources/deployments",
-		"apiVersion": "2015-05-01-preview",
+		"apiVersion": "2015-01-01",
 		"properties": {
 			"mode": "Incremental",
 			"templateLink": {

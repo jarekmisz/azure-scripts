@@ -48,6 +48,7 @@ $jsonBody = @"
 			"parameters": {
 				"adminUsername": {
 					"type": "string",
+					"defaultValue": "jarek",
 					"metadata": {
 						"description": "Administrator user name used when provisioning virtual machines (which also becomes a system user administrator in MongoDB)"
 					}
@@ -60,13 +61,14 @@ $jsonBody = @"
 				},
 				"storageAccountName": {
 					"type": "string",
-					"defaultValue": "",
+					"defaultValue": "mongodbhasg",
 					"metadata": {
 						"description": "Unique namespace for the Storage Account where the Virtual Machine's disks will be placed (this name will be used as a prefix to create one or more storage accounts as per t-shirt size)"
 					}
 				},
 				"location": {
 					"type": "string",
+					"defaultValue": "West US",
 					"allowedValues": ["West US",
 					"East US",
 					"East Asia",
@@ -113,7 +115,7 @@ $jsonBody = @"
 				},
 				"jumpbox": {
 					"type": "string",
-					"defaultValue": "Disabled",
+					"defaultValue": "Enabled",
 					"allowedValues": ["Enabled",
 					"Disabled"],
 					"metadata": {
@@ -157,6 +159,7 @@ $jsonBody = @"
 				},
 				"replicaSetKey": {
 					"type": "string",
+					"defaultValue": "Temp4now",
 					"metadata": {
 						"description": "The shared secret key for the MongoDB replica set"
 					}
@@ -509,6 +512,7 @@ $jsonBody = @"
 			}]
 		},
 		"parameters": {
+		"adminPassword": { "value": "Temp4now" }
 		},
 		"mode": "Incremental"
 	}
@@ -538,7 +542,7 @@ $deploymentName = "sharedresourcesdeploy"
  
 # Call Azure Service Management REST API to add Autoscale settings
 #$azureMgmtUri = "https://management.azure.com/subscriptions/$subscriptionId/resourcegroups/jmrestrg?api-version=2015-01-01"  
-$azureMgmtUri = "https://management.azure.com/subscriptions/f6c0cb91-aaca-4ff3-9bd9-4be01af16a8b/resourcegroups/jmrestrg/deployments/shared-resources/validate?api-version=2015-01-01" 
+$azureMgmtUri = "https://management.azure.com/subscriptions/f6c0cb91-aaca-4ff3-9bd9-4be01af16a8b/resourcegroups/jmsimplenestedrg/deployments/simple-nested-rest/validate?api-version=2015-01-01" 
 #$azureMgmtUri = "https://management.azure.com/subscriptions/f6c0cb91-aaca-4ff3-9bd9-4be01af16a8b/resourcegroups?api-version=2014-04-01-preview"
  
 $response = Invoke-RestMethod `
@@ -548,6 +552,15 @@ $response = Invoke-RestMethod `
     -Body $jsonBody `
     -ContentType $contentType
 
+$azureMgmtUri = "https://management.azure.com/subscriptions/f6c0cb91-aaca-4ff3-9bd9-4be01af16a8b/resourcegroups/jmmongodb-ha/deployments/mongodb-ha?api-version=2015-01-01" 
+
+$response = Invoke-RestMethod `
+    -Uri $azureMgmtUri `
+    -Method Put `
+    -Headers $requestHeader `
+    -Body $jsonBody `
+    -ContentType $contentType `
+    -Verbose
 
 $response = Invoke-RestMethod 
     -Uri $azureMgmtUri `
