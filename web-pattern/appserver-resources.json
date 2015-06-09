@@ -81,7 +81,7 @@
 		"type": "Microsoft.Network/networkInterfaces",
 		"name": "appserverNIC",
 		"location": "[parameters('commonSettings').location]",
-		"dependsOn": ["[concat('Microsoft.Network/publicIPAddresses/', 'appserverIP')]",
+		"dependsOn": ["[concat('Microsoft.Network/publicIPAddresses/', 'appserverPublicIP')]",
 		"[concat('Microsoft.Network/networkSecurityGroups/', variables('securityGroupName'))]"],
 		"properties": {
 			"ipConfigurations": [{
