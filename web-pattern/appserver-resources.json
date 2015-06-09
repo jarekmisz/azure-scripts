@@ -1,0 +1,156 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"commonSettings": {
+			"type": "object",
+			"metadata": {
+				"Description": "Common settings object"
+			}
+		},
+		"storageSettings": {
+			"type": "object",
+			"metadata": {
+				"Description": "Storage settings object"
+			}
+		},
+		"networkSettings": {
+			"type": "object",
+			"metadata": {
+				"Description": "Network settings object"
+			}
+		},
+		"machineSettings": {
+			"type": "object",
+			"metadata": {
+				"Description": "Machine settings object"
+			}
+		}
+	},
+	"variables": {
+		"vmSize": "Standard_A2",
+		"securityGroupName": "appserverNSG"
+	},
+	"resources": [{
+		"apiVersion": "2015-05-01-preview",
+		"type": "Microsoft.Network/networkSecurityGroups",
+		"name": "[variables('securityGroupName')]",
+		"location": "[parameters('commonSettings').location]",
+		"properties": {
+			"securityRules": [{
+				"name": "SSH",
+				"properties": {
+					"description": "Allows SSH traffic",
+					"protocol": "Tcp",
+					"sourcePortRange": "22",
+					"destinationPortRange": "22",
+					"sourceAddressPrefix": "*",
+					"destinationAddressPrefix": "*",
+					"access": "Allow",
+					"priority": 100,
+					"direction": "Inbound"
+				}
+			},
+			{
+				"name": "HTTP",
+				"properties": {
+					"description": "Allows HTTP traffic to WLP server",
+					"protocol": "Tcp",
+					"sourcePortRange": "9121",
+					"destinationPortRange": "9121",
+					"sourceAddressPrefix": "*",
+					"destinationAddressPrefix": "*",
+					"access": "Allow",
+					"priority": 200,
+					"direction": "Inbound"
+				}
+			}]
+		}
+	},
+	{
+		"apiVersion": "2015-05-01-preview",
+		"type": "Microsoft.Network/publicIPAddresses",
+		"name": "appserverPublicIP",
+		"location": "[parameters('commonSettings').location]",
+		"properties": {
+			"publicIPAllocationMethod": "Dynamic"
+		}
+	},
+	{
+		"apiVersion": "2015-05-01-preview",
+		"type": "Microsoft.Network/networkInterfaces",
+		"name": "appserverNIC",
+		"location": "[parameters('commonSettings').location]",
+		"dependsOn": ["[concat('Microsoft.Network/publicIPAddresses/', 'appserverIP')]",
+		"[concat('Microsoft.Network/networkSecurityGroups/', variables('securityGroupName'))]"],
+		"properties": {
+			"ipConfigurations": [{
+				"name": "ipConfigAppserver",
+				"properties": {
+					"privateIPAllocationMethod": "Dynamic",
+					"publicIPAddress": {
+						"id": "[resourceId('Microsoft.Network/publicIPAddresses','appserverPublicIP')]"
+					},
+					"networkSecurityGroup": {
+						"id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('securityGroupName'))]"
+					},
+					"subnet": {
+						"id": "[parameters('networkSettings').subnetRef]"
+					}
+				}
+			}]
+		}
+	},
+	{
+		"apiVersion": "2015-05-01-preview",
+		"type": "Microsoft.Compute/virtualMachines",
+		"name": "appserverVM",
+		"location": "[parameters('commonSettings').location]",
+		"dependsOn": ["[concat('Microsoft.Network/networkInterfaces/', 'appserverNIC')]"],
+		"properties": {
+			"hardwareProfile": {
+				"vmSize": "[variables('vmSize')]"
+			},
+			"osProfile": {
+				"computername": "[concat(parameters('machineSettings').machineNamePrefix, 'appserver')]",
+				"adminUsername": "[parameters('machineSettings').adminUsername]",
+				"adminPassword": "[parameters('machineSettings').adminPassword]"
+			},
+			"storageProfile": {
+				"imageReference": "[parameters('machineSettings').osImageReference]",
+				"osDisk": {
+					"name": "osdisk",
+					"vhd": {
+						"uri": "[concat(parameters('storageSettings').destinationVhdsContainer, 'appserver-os-disk.vhd')]"
+					},
+					"caching": "ReadWrite",
+					"createOption": "FromImage"
+				}
+			},
+			"networkProfile": {
+				"networkInterfaces": [{
+					"id": "[resourceId('Microsoft.Network/networkInterfaces','appserverNIC')]"
+				}]
+			}
+		}
+	},
+	{
+		"type": "Microsoft.Compute/virtualMachines/extensions",
+		"name": "[concat(parameters('vmName'),'/wlpinstall')]",
+		"apiVersion": "2015-05-01-preview",
+		"location": "[parameters('location')]",
+		"dependsOn": ["[concat('Microsoft.Compute/virtualMachines/', 'appserverVM')]"],
+		"properties": {
+			"publisher": "Microsoft.OSTCExtensions",
+			"type": "CustomScriptForLinux",
+			"typeHandlerVersion": "1.2",
+			"settings": {
+				"fileUris": ["https://raw.github.com/jarekmisz/azure-scripts/master/web-pattern/sampleinstall-with-parms.sh"],
+				"commandToExecute": "[concat('bash sampleinstall-with-parms.sh -m ', '10.0.0.10')]",
+				"timestamp": "[parameters('timestamp')]"
+			}
+		}
+	}],
+	"outputs": {
+	}
+}

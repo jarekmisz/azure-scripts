@@ -467,10 +467,53 @@
 						}
 					}
 				}
+			},
+			{
+				"type": "Microsoft.Resources/deployments",
+				"name": "lastmember-resources",
+				"apiVersion": "2015-01-01",
+				"dependsOn": ["memberNodesLoop"],
+				"properties": {
+					"mode": "Incremental",
+					"templateLink": {
+						"uri": "[variables('clusterSpec').vmTemplate]",
+						"contentVersion": "1.0.0.0"
+					},
+					"parameters": {
+						"commonSettings": {
+							"value": "[variables('commonSettings')]"
+						},
+						"storageSettings": {
+							"value": {
+								"vhdStorageAccountName": "[concat(variables('storageSettings').vhdStorageAccountName, variables(concat('storageAccountFor', parameters('tshirtSize'), '_', variables('clusterSpec').numberOfMembers)))]",
+								"vhdContainerName": "[variables('storageSettings').vhdContainerName]",
+								"destinationVhdsContainer": "[concat('https://', variables('storageSettings').vhdStorageAccountName, variables(concat('storageAccountFor', parameters('tshirtSize'), '_', variables('clusterSpec').numberOfMembers)), variables('vmStorageAccountDomain'), '/', variables('storageSettings').vhdContainerName, '/')]"
+							}
+						},
+						"networkSettings": {
+							"value": "[variables('networkSettings')]"
+						},
+						"machineSettings": {
+							"value": {
+								"adminUsername": "[variables('machineSettings').adminUsername]",
+								"adminPassword": "[variables('machineSettings').adminPassword]",
+								"machineNamePrefix": "[variables('machineSettings').machineNamePrefix]",
+								"osImageReference": "[variables('machineSettings').osImageReference]",
+								"vmSize": "[variables('clusterSpec').vmSizeMember]",
+								"dataDiskSize": "[variables('clusterSpec').dataDiskSize]",
+								"machineIndex": "[variables('clusterSpec').numberOfMembers]",
+								"vmScripts": "[variables('vmScripts').scriptsToDownload]",
+								"commandToExecute": "[variables('vmScripts').lastNodeInstallCommand]"
+							}
+						}
+					}
+				}
 			}]
 		},
 		"parameters": {
-		"adminPassword": { "value": "Temp4now" }
+			"adminPassword": {
+				"value": "Temp4now"
+			}
 		},
 		"mode": "Incremental"
 	}
