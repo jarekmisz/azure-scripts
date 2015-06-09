@@ -17,8 +17,8 @@ The template expects the following parameters:
 | adminPassword  | Administrator password used when provisioning virtual machines (which is also a password for the system administrator in MongoDB) | |
 | storageAccountName | Unique namespace for a new storage account where the virtual machine's disks will be placed (it will be used as a prefix to create one or more new storage accounts as per t-shirt size) | |
 | location | Location where resources will be provisioned | |
-| virtualNetworkName | The arbitrary name of the virtual network provisioned for the MongoDB deployment | mongodbVnet |
-| subnetName | Subnet name for the virtual network that resources will be provisioned in to | mongodbSubnet |
+| virtualNetworkName | The arbitrary name of the virtual network provisioned for the MongoDB deployment | jmlibertymongodbVnet |
+| subnetName | Subnet name for the virtual network that resources will be provisioned in to | jmlibertymongodbSubnet |
 | addressPrefix | The network address space for the virtual network | 10.0.0.0/16 |
 | subnetPrefix | The network address space for the virtual subnet | 10.0.0.0/24 |
 | nodeAddressPrefix | The IP address prefix that will be used for constructing a static private IP address for each node in the cluster | 10.0.0.1 |
@@ -53,7 +53,7 @@ The size of the arbiter node is standardized as _Standard_A1_. Arbiters do not s
 Each member node in the deployment will have a MongoDB daemon installed and correctly configured to participate in a replica set. All member nodes except the last one will be provisioned in parallel. During provisioning of the last node, a replica set will be initiated.
 The optional arbiter joins the replica set after it is initiated. To ensure a successful deployment, this template has to serialize the provisioning of all member nodes and the arbiter node as follows:
 
-__(1) MEMBER NODES__ (except last) >>> __(2) LAST MEMBER NODE__ >>> __(3) ARBITER__ (optional) ___(4) LIBERTY___
+__(1) MEMBER NODES__ (except last) >>> __(2) LAST MEMBER NODE__ >>> __(3) ARBITER__ (optional) >>> ___(4) LIBERTY___
 
 In the above deployment sequence, steps #1 and #2 will have to complete first before the next step kicks off. As a result, you may be seeing longer-than-desirable deployment times as member node provisioning is not fully parallelized.
 
