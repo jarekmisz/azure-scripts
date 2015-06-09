@@ -136,7 +136,7 @@
 	},
 	{
 		"type": "Microsoft.Compute/virtualMachines/extensions",
-		"name": "[concat(parameters('vmName'),'/wlpinstall')]",
+		"name": "[concat('appserverVM','/wlpinstall')]",
 		"apiVersion": "2015-05-01-preview",
 		"location": "[parameters('location')]",
 		"dependsOn": ["[concat('Microsoft.Compute/virtualMachines/', 'appserverVM')]"],
