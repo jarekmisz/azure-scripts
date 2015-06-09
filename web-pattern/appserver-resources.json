@@ -138,7 +138,7 @@
 		"type": "Microsoft.Compute/virtualMachines/extensions",
 		"name": "[concat('appserverVM','/wlpinstall')]",
 		"apiVersion": "2015-05-01-preview",
-		"location": "[parameters('location')]",
+		"location": "[parameters('commonSettings').location]",
 		"dependsOn": ["[concat('Microsoft.Compute/virtualMachines/', 'appserverVM')]"],
 		"properties": {
 			"publisher": "Microsoft.OSTCExtensions",
@@ -146,8 +146,7 @@
 			"typeHandlerVersion": "1.2",
 			"settings": {
 				"fileUris": ["https://raw.github.com/jarekmisz/azure-scripts/master/web-pattern/sampleinstall-with-parms.sh"],
-				"commandToExecute": "[concat('bash sampleinstall-with-parms.sh -m ', '10.0.0.10')]",
-				"timestamp": "[parameters('timestamp')]"
+				"commandToExecute": "[concat('bash sampleinstall-with-parms.sh -m ', '10.0.0.10')]"
 			}
 		}
 	}],
