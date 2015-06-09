@@ -73,7 +73,10 @@
 		"name": "appserverPublicIP",
 		"location": "[parameters('commonSettings').location]",
 		"properties": {
-			"publicIPAllocationMethod": "Dynamic"
+			"publicIPAllocationMethod": "Dynamic",
+			"dnsSettings": {
+				"domainNameLabel": "[parameters('dnsNameForPublicIP')]"
+			}
 		}
 	},
 	{
@@ -151,5 +154,5 @@
 		}
 	}],
 	"outputs": {
-	}
+		}
 }
