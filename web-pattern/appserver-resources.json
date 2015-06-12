@@ -75,7 +75,7 @@
 		"properties": {
 			"publicIPAllocationMethod": "Dynamic",
 			"dnsSettings": {
-				"domainNameLabel": "[parameters('dnsNameForPublicIP')]"
+				"domainNameLabel": "[concat(resourceGroup().name, 'appserver')]"
 			}
 		}
 	},
