@@ -1,5 +1,5 @@
 ﻿# parameters 
-$rgName = "AzureDNSExample"
+$rgName = "jmdnszonerg"
 
 #  set ARM mode
 Switch-AzureMode AzureResourceManager
@@ -10,7 +10,7 @@ Add-AzureAccount
 
 # create the resource from the template - pass names as parameters
 $scriptDir = Split-Path $MyInvocation.MyCommand.Path
-New-AzureResourceGroup -Verbose -Force -Name $rgName -Location "northeurope" -TemplateFile "$scriptDir\azuredeploy.json" -TemplateParameterFile "$scriptDir\azuredeploy.parameters.json"
+New-AzureResourceGroup -Verbose -Force -Name $rgName -Location "Central US" -TemplateFile "$scriptDir\azuredeploy.json" -TemplateParameterFile "$scriptDir\azuredeploy.parameters.json"
 
 #  display the end result - creation is async so may need to wait
 $zones = Get-AzureDnsZone -ResourceGroupName $rgName

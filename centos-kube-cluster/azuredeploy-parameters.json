@@ -6,7 +6,7 @@
 		"value": "Temp4now"
 	},
 	"newStorageAccountName":{
-		"value": "kubestore"
+		"value": "kubeclustersa"
 	},
 	"numberOfInstances": {
 		"value": 2
