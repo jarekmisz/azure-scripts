@@ -61,7 +61,7 @@ $jsonBody = @"
 				},
 				"storageAccountName": {
 					"type": "string",
-					"defaultValue": "mongodbhasg",
+					"defaultValue": "libertymongohasg",
 					"metadata": {
 						"description": "Unique namespace for the Storage Account where the Virtual Machine's disks will be placed (this name will be used as a prefix to create one or more storage accounts as per t-shirt size)"
 					}
@@ -80,14 +80,14 @@ $jsonBody = @"
 				},
 				"virtualNetworkName": {
 					"type": "string",
-					"defaultValue": "mongodbVnet",
+					"defaultValue": "libertymongoVnet",
 					"metadata": {
 						"description": "The arbitrary name of the virtual network provisioned for the MongoDB deployment"
 					}
 				},
 				"subnetName": {
 					"type": "string",
-					"defaultValue": "mongodbSubnet",
+					"defaultValue": "libertymongoSubnet",
 					"metadata": {
 						"description": "Subnet name for the virtual network that resources will be provisioned in to"
 					}
@@ -509,10 +509,53 @@ $jsonBody = @"
 						}
 					}
 				}
+			},
+			{
+				"type": "Microsoft.Resources/deployments",
+				"name": "appserver-resources",
+				"apiVersion": "2015-01-01",
+				"dependsOn": ["[concat('Microsoft.Resources/deployments/', 'lastmember-resources')]"],
+				"properties": {
+					"mode": "Incremental",
+					"templateLink": {
+						"uri": "https://raw.githubusercontent.com/jarekmisz/azure-scripts/master/web-pattern/appserver-resources.json",
+						"contentVersion": "1.0.0.0"
+					},
+					"parameters": {
+						"commonSettings": {
+							"value": "[variables('commonSettings')]"
+						},
+						"storageSettings": {
+							"value": {
+								"vhdStorageAccountName": "[concat(variables('storageSettings').vhdStorageAccountName, variables(concat('storageAccountFor', parameters('tshirtSize'), '_', variables('clusterSpec').numberOfMembers)))]",
+								"vhdContainerName": "[variables('storageSettings').vhdContainerName]",
+								"destinationVhdsContainer": "[concat('https://', variables('storageSettings').vhdStorageAccountName, variables(concat('storageAccountFor', parameters('tshirtSize'), '_', variables('clusterSpec').numberOfMembers)), variables('vmStorageAccountDomain'), '/', variables('storageSettings').vhdContainerName, '/')]"
+							}
+						},
+						"networkSettings": {
+							"value": "[variables('networkSettings')]"
+						},
+						"machineSettings": {
+							"value": {
+								"adminUsername": "[variables('machineSettings').adminUsername]",
+								"adminPassword": "[variables('machineSettings').adminPassword]",
+								"machineNamePrefix": "liberty-",
+								"osImageReference": {
+									"publisher": "OpenLogic",
+									"offer": "CentOS",
+									"sku": "6.6",
+									"version": "latest"
+								}
+							}
+						}
+					}
+				}
 			}]
 		},
 		"parameters": {
-		"adminPassword": { "value": "Temp4now" }
+			"adminPassword": {
+				"value": "Temp4now"
+			}
 		},
 		"mode": "Incremental"
 	}
@@ -542,7 +585,7 @@ $deploymentName = "sharedresourcesdeploy"
  
 # Call Azure Service Management REST API to add Autoscale settings
 #$azureMgmtUri = "https://management.azure.com/subscriptions/$subscriptionId/resourcegroups/jmrestrg?api-version=2015-01-01"  
-$azureMgmtUri = "https://management.azure.com/subscriptions/f6c0cb91-aaca-4ff3-9bd9-4be01af16a8b/resourcegroups/jmsimplenestedrg/deployments/simple-nested-rest/validate?api-version=2015-01-01" 
+$azureMgmtUri = "https://management.azure.com/subscriptions/f6c0cb91-aaca-4ff3-9bd9-4be01af16a8b/resourcegroups/libertymongodbharg/deployments/libertymongodbha/validate?api-version=2015-01-01" 
 #$azureMgmtUri = "https://management.azure.com/subscriptions/f6c0cb91-aaca-4ff3-9bd9-4be01af16a8b/resourcegroups?api-version=2014-04-01-preview"
  
 $response = Invoke-RestMethod `
@@ -552,7 +595,7 @@ $response = Invoke-RestMethod `
     -Body $jsonBody `
     -ContentType $contentType
 
-$azureMgmtUri = "https://management.azure.com/subscriptions/f6c0cb91-aaca-4ff3-9bd9-4be01af16a8b/resourcegroups/jmmongodb-ha/deployments/mongodb-ha?api-version=2015-01-01" 
+$azureMgmtUri = "https://management.azure.com/subscriptions/f6c0cb91-aaca-4ff3-9bd9-4be01af16a8b/resourcegroups/libertymongodbharg/deployments/libertymongodbha?api-version=2015-01-01" 
 
 $response = Invoke-RestMethod `
     -Uri $azureMgmtUri `

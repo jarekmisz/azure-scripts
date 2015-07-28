@@ -1,0 +1,256 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"adminUsername": {
+			"type": "string",
+			"metadata": {
+				"description": "Admin username for VM"
+			}
+		},
+		"adminPassword": {
+			"type": "securestring",
+			"metadata": {
+				"description": "Admin password for VM"
+			}
+		},
+		"newStorageAccountName": {
+			"type": "string",
+			"metadata": {
+				"description": "Unique storage account name"
+			}
+		},
+		"numberOfInstances": {
+			"type": "int",
+			"defaultValue": 2,
+			"allowedValues": [2,
+			3,
+			4,
+			5,
+			6,
+			7,
+			8,
+			9,
+			10],
+			"metadata": {
+				"description": "Number of VMs to deploy (2-10)"
+			}
+		},
+		"vmSize": {
+			"type": "string",
+			"defaultValue": "Standard_D2",
+			"allowedValues": ["Standard_A3",
+			"Standard_A6",
+			"Standard_A7",
+			"Standard_A8",
+			"Standard_A9",
+			"Standard_A10",
+			"Standard_A11",
+			"Standard_D2",
+			"Standard_D3",
+			"Standard_D4",
+			"Standard_D11",
+			"Standard_D12",
+			"Standard_D13",
+			"Standard_D14"],
+			"metadata": {
+				"description": "Size of the Virtual Machine."
+			}
+		}
+	},
+	"variables": {
+		"imagePublisher": "OpenLogic",
+		"imageOffer": "CentOS",
+		"imageSKU": "7.1",
+		"customScriptFilePath": "https://raw.githubusercontent.com/jarekmisz/azure-scripts/master/centos-kube-cluster/setup-minion.sh",
+		"customScriptCommandToExecute": "bash setup-minion.sh",
+		"publicIPAddressName": "minionPublicIP",
+		"virtualNetworkName": "kubeVNET",
+		"availabilitySetName": "kubeAvSet",
+		"securityGroupName": "kubeNSG",
+		"vnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+		"addressPrefix": "10.11.0.0/16",
+		"subnet1Name": "Subnet-1",
+		"subnet1Prefix": "10.11.50.0/24",
+		"subnet1Ref": "[concat(variables('vnetID'),'/subnets/', variables('subnet1Name'))]",
+		"publicIPAddressID": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+	},
+	"resources": [{
+		"type": "Microsoft.Storage/storageAccounts",
+		"name": "[parameters('newStorageAccountName')]",
+		"apiVersion": "2015-05-01-preview",
+		"location": "[resourceGroup().location]",
+		"properties": {
+			"accountType": "Standard_LRS"
+		}
+	},
+	{
+		"type": "Microsoft.Compute/availabilitySets",
+		"name": "[variables('availabilitySetName')]",
+		"apiVersion": "2015-05-01-preview",
+		"location": "[resourceGroup().location]",
+		"properties": {
+		}
+	},
+	{
+		"apiVersion": "2015-05-01-preview",
+		"type": "Microsoft.Network/networkSecurityGroups",
+		"name": "[variables('securityGroupName')]",
+		"location": "[resourceGroup().location]",
+		"properties": {
+			"securityRules": [{
+				"name": "SSH",
+				"properties": {
+					"description": "Allows SSH traffic",
+					"protocol": "Tcp",
+					"sourcePortRange": "22",
+					"destinationPortRange": "22",
+					"sourceAddressPrefix": "*",
+					"destinationAddressPrefix": "*",
+					"access": "Allow",
+					"priority": 100,
+					"direction": "Inbound"
+				}
+			}]
+		}
+	},
+	{
+		"apiVersion": "2015-05-01-preview",
+		"type": "Microsoft.Network/publicIPAddresses",
+		"name": "[concat('minionPublicIP', copyindex())]",
+		"location": "[resourceGroup().location]",
+		"copy": {
+			"name": "publicIPLoop",
+			"count": "[parameters('numberOfInstances')]"
+		},
+		"properties": {
+			"publicIPAllocationMethod": "Dynamic"
+		}
+	},
+	{
+		"apiVersion": "2015-05-01-preview",
+		"type": "Microsoft.Network/virtualNetworks",
+		"name": "[variables('virtualNetworkName')]",
+		"location": "[resourceGroup().location]",
+		"copy": {
+			"name": "virtualNetworkLoop",
+			"count": "[parameters('numberOfInstances')]"
+		},
+		"properties": {
+			"addressSpace": {
+				"addressPrefixes": ["[variables('addressPrefix')]"]
+			},
+			"subnets": [{
+				"name": "[variables('subnet1Name')]",
+				"properties": {
+					"addressPrefix": "[variables('subnet1Prefix')]"
+				}
+			}]
+		}
+	},
+	{
+		"type": "Microsoft.Network/networkInterfaces",
+		"name": "[concat('nicMinion', copyindex())]",
+		"apiVersion": "2015-05-01-preview",
+		"location": "[resourceGroup().location]",
+		"copy": {
+			"name": "networkInterfaceLoop",
+			"count": "[parameters('numberOfInstances')]"
+		},
+		"properties": {
+			"ipConfigurations": [{
+				"name": "ipconfig1",
+				"properties": {
+					"privateIPAllocationMethod": "Static",
+					"privateIPAddress": "[concat('10.11.50.1',copyIndex())]",
+					"publicIPAddress": {
+						"id": "[resourceId('Microsoft.Network/publicIPAddresses',concat('minionPublicIP', copyindex()))]"
+					},
+					"networkSecurityGroup": {
+						"id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('securityGroupName'))]"
+					},
+					"subnet": {
+						"id": "[variables('subnet1Ref')]"
+					}
+				}
+			}],
+			      "dnsSettings":{  
+         "dnsServers":[  
+            "208.76.47.3",
+            "8.8.8.8"
+         ]
+      }
+			
+		}
+	},
+	{
+		"apiVersion": "2015-05-01-preview",
+		"type": "Microsoft.Compute/virtualMachines",
+		"name": "[concat('kube-minion', copyIndex())]",
+		"location": "[resourceGroup().location]",
+		"copy": {
+			"name": "virtualMachineLoop",
+			"count": "[parameters('numberOfInstances')]"
+		},
+		"dependsOn": ["[concat('Microsoft.Network/networkInterfaces/', 'nicMinion', copyIndex())]",
+		"[concat('Microsoft.Storage/storageAccounts/', parameters('newStorageAccountName'))]",
+		"[concat('Microsoft.Compute/availabilitySets/', variables('availabilitySetName'))]"],
+		"properties": {
+			"availabilitySet": {
+				"id": "[resourceId('Microsoft.Compute/availabilitySets', variables('availabilitySetName'))]"
+			},
+			"hardwareProfile": {
+				"vmSize": "[parameters('vmSize')]"
+			},
+			"osProfile": {
+				"computername": "[concat('kube-minion', copyIndex())]",
+				"adminUsername": "[parameters('adminUsername')]",
+				"adminPassword": "[parameters('adminPassword')]"
+			},
+			"storageProfile": {
+				"imageReference": {
+					"publisher": "[variables('imagePublisher')]",
+					"offer": "[variables('imageOffer')]",
+					"sku": "[variables('imageSKU')]",
+					"version": "latest"
+				},
+				"osDisk": {
+					"name": "osdisk",
+					"vhd": {
+						"uri": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds/','osdisk', copyIndex(), '.vhd')]"
+					},
+					"caching": "ReadWrite",
+					"createOption": "FromImage"
+				}
+			},
+			"networkProfile": {
+				"networkInterfaces": [{
+					"properties": {
+						"primary": true
+					},
+					"id": "[resourceId('Microsoft.Network/networkInterfaces',concat('nicMinion', copyindex()))]"
+				}]
+			}
+		}
+	},
+	{
+		"type": "Microsoft.Compute/virtualMachines/extensions",
+		"name": "[concat('kube-minion', copyIndex(), '/extension')]",
+		"apiVersion": "2015-05-01-preview",
+		"location": "[resourceGroup().location]",
+		"copy": {
+			"name": "virtualMachineLoop",
+			"count": "[parameters('numberOfInstances')]"
+		},
+		"dependsOn": ["[concat('Microsoft.Compute/virtualMachines/', 'kube-minion', copyIndex())]"],
+		"properties": {
+			"publisher": "Microsoft.OSTCExtensions",
+			"type": "CustomScriptForLinux",
+			"typeHandlerVersion": "1.2",
+			"settings": {
+				"fileUris": ["[variables('customScriptFilePath')]"],
+				"commandToExecute": "[variables('customScriptCommandToExecute')]"
+			}
+		}
+	}]
+}

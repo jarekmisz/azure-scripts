@@ -1,0 +1,17 @@
+{
+	"adminUsername": {
+		"value": "jarek"
+	},
+	"adminPassword": {
+		"value": "Temp4now"
+	},
+	"newStorageAccountName":{
+		"value": "kubestore"
+	},
+	"numberOfInstances": {
+		"value": 2
+	},
+	"vmsize": {
+		"value": "Standard_D2"
+	}
+}
