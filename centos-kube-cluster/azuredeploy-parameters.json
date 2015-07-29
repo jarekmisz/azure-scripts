@@ -2,9 +2,6 @@
 	"adminUsername": {
 		"value": "jarek"
 	},
-	"adminPassword": {
-		"value": "Temp4now"
-	},
 	"newStorageAccountName":{
 		"value": "kubeclustersa"
 	},
