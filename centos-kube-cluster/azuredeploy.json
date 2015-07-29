@@ -225,7 +225,7 @@
 			"typeHandlerVersion": "1.2",
 			"settings": {
 				"fileUris": ["[concat(variables('customScriptFilePath'),'/setup-master.sh')]"],
-				"commandToExecute": "bash setup-master.sh"
+				"commandToExecute": "[concat('bash setup-master.sh ', parameters('numberOfInstances'))]"
 			}
 		}
 	},

@@ -18,7 +18,7 @@
 		},
 		"numberOfInstances": {
 			"type": "int",
-			"defaultValue": 3,
+			"defaultValue": 10,
 			"metadata": {
 				"description": "Number of DNS records to be created."
 			}

@@ -1,5 +1,16 @@
 #!/bin/bash
 
+#Sanity checks 
+if [[ $# -eq 0 ]] ; then
+    echo 'You need to pass the number of the minions in the cluster...Exiting...'
+    exit 1
+fi
+if [[ $1 -lt 1 ]] ; then
+    echo 'The number of minions needs to be greater than 0...Exiting...'
+    exit 1
+fi
+
+
 cat << EOF > /etc/yum.repos.d/virt7-testing.repo
 [virt7-testing]
 name=virt7-testing
@@ -25,9 +36,11 @@ sed -i 's\^ETCD_ADVERTISE_CLIENT_URLS=.*\ETCD_ADVERTISE_CLIENT_URLS="http://'$HO
 
 sed -i 's/^KUBE_API_ADDRESS=.*/KUBE_API_ADDRESS="--address=0.0.0.0"/g' /etc/kubernetes/apiserver
 sed -i "s/127.0.0.1:4001/kube-master:4001/g" /etc/kubernetes/apiserver
+
 # Insert between 
-list='kube-minion0'
+typeset -i END i
 let END=$1 i=1
+list='kube-minion0'
 while ((i<END)); do list=$list',kube-minion'$i; echo $list; let i++; done
 sed -i 's/^# defaults from config and apiserver.*/KUBELET_ADDRESSES="--machines='$list'"/g' /etc/kubernetes/controller-manager
 
