@@ -4,6 +4,27 @@
 dnsname=$1
 dnsip=$(ping -c 1 $dnsname | gawk -F'[()]' '/PING/{print $2}')
 sed -i 's/255.255.255.255/'$dnsip'/g' /etc/resolv.conf
+#When reboot happens
+chmod +x /etc/rc.d/rc.local
+
+cat << EOF >> /etc/azure-nameserver.conf
+$dnsip
+EOF
+
+#To ensure idenpotance of this script
+if [ -e /etc/rc.d/rc.local.original ] ; then
+ cp /etc/rc.d/rc.local.original /etc/rc.d/rc.local
+else
+ cp /etc/rc.d/rc.local /etc/rc.d/rc.local.original
+fi	
+#Fix the DNS server Ip on consecutive boots, note the quotes around EOF
+cat << 'EOF' >> /etc/rc.d/rc.local
+if [ -e /etc/azure-nameserver.conf ]
+then
+ AZURENSIP=$(cat /etc/azure-nameserver.conf)
+ sed -i 's/255.255.255.255/'$AZURENSIP'/g' /etc/resolv.conf
+fi
+EOF
 
 cat << EOF > /etc/yum.repos.d/virt7-testing.repo
 [virt7-testing]
