@@ -61,5 +61,11 @@
 			}]
 		},
 		"dependsOn": ["[concat('Microsoft.Network/dnszones/', parameters('newZoneName'))]"]
-	}]
+	}],
+	"outputs": {
+		"dnsServerName": {
+			"type": "String",
+			"value": "[reference(resourceId('Microsoft.Network/dnszones/ns', parameters('newZoneName'), '@'),'2015-05-04-preview').NSRecords[0].nsdname]"
+		}
+	}
 }

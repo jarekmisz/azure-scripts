@@ -20,6 +20,12 @@
 				"description": "Unique storage account name"
 			}
 		},
+		"dnsServerName": {
+			"type": "string",
+			"metadata": {
+				"description": "DNS Server Name returned in NS record when the zone was created"
+			}
+		},
 		"numberOfInstances": {
 			"type": "int",
 			"defaultValue": 2,
@@ -89,7 +95,7 @@
 		"apiVersion": "2015-05-01-preview",
 		"location": "[resourceGroup().location]",
 		"properties": {
-		}
+			}
 	},
 	{
 		"apiVersion": "2015-05-01-preview",
@@ -162,7 +168,7 @@
 				}
 			}],
 			"dnsSettings": {
-				"dnsServers": ["208.76.47.3",
+				"dnsServers": ["255.255.255.255",
 				"8.8.8.8"]
 			}
 		}
@@ -225,7 +231,7 @@
 			"typeHandlerVersion": "1.2",
 			"settings": {
 				"fileUris": ["[concat(variables('customScriptFilePath'),'/setup-master.sh')]"],
-				"commandToExecute": "[concat('bash setup-master.sh ', parameters('numberOfInstances'))]"
+				"commandToExecute": "[concat('bash setup-master.sh ', parameters('numberOfInstances'), ' ', parameters('dnsServerName'))]"
 			}
 		}
 	},
@@ -269,7 +275,7 @@
 				}
 			}],
 			"dnsSettings": {
-				"dnsServers": ["208.76.47.3",
+				"dnsServers": ["255.255.255.255",
 				"8.8.8.8"]
 			}
 		}
@@ -340,7 +346,7 @@
 			"typeHandlerVersion": "1.2",
 			"settings": {
 				"fileUris": ["[concat(variables('customScriptFilePath'),'/setup-minion.sh')]"],
-				"commandToExecute": "[variables('customScriptCommandToExecute')]"
+				"commandToExecute": "[concat(variables('customScriptCommandToExecute'), ' ',parameters('dnsServerName'))]"
 			}
 		}
 	}]

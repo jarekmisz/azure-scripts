@@ -1,5 +1,10 @@
 #!/bin/bash
 
+#Fix name resolution first
+dnsname=$1
+dnsip=$(ping -c 1 $dnsname | gawk -F'[()]' '/PING/{print $2}')
+sed -i 's/255.255.255.255/'$dnsip'/g' /etc/resolv.conf
+
 cat << EOF > /etc/yum.repos.d/virt7-testing.repo
 [virt7-testing]
 name=virt7-testing

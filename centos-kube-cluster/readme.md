@@ -1,13 +1,24 @@
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Fazure-quickstart-templates%2Fmaster%2FCentOS-2nics-lb-cluster%2Fazuredeploy.json" target="_blank">
+#Deploy kubernetes cluster on CentOS 7.1 virtual machines
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fjarekmisz%2Fazure-scripts%2Fmaster%2Fcentos-cube-cluster%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 
 
 
-This template deploys a 2-10-node CentOS 6.5 cluster using the ARM "copy" feature. Each node has 2 network cards:
+This template deploys a kubernetes cluster that consists of a master and 2-10 nodes (minions). The deployment has been tested on CentOS 7.1. It utilizes systemd and etcd. There is just one instance on etcd that runs on the kubernetes master. The master constitues a single point of failure so it really doesn't matter if etcd is highly available.
+The naming convention:
 
-* The first one is on a "public" subnet.
-* The second one is on a "private" subnet.
+* kube-master
+* kube-minion0 .. kube-minion9
+
+Couple comments on networking:
+There are two layers of networking:
+* The Azure virtual network, on which the VMs reside:
+** kubeVNET - 10.11.50.0/16
+** Subnet-1 - 10.11.50.0/24
+
+
+
 
 The public subnet is fronted by a load-balancer with one dynamically assigned public IP address and as many NAT ports as there are nodes, starting from port 50000.
 The template also asks for a dns name and a location for the ip address.
