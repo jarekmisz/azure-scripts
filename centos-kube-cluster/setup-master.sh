@@ -56,8 +56,9 @@ cp /etc/etcd/etcd.conf /etc/etcd/etcd.conf.orig
 sed -i 's\^ETCD_NAME=.*\ETCD_NAME='$HOSTNAME'\g' /etc/etcd/etcd.conf
 sed -i 's\^#ETCD_LISTEN_PEER_URLS=.*\ETCD_LISTEN_PEER_URLS="http://0.0.0.0:2380"\g' /etc/etcd/etcd.conf
 sed -i 's\^ETCD_LISTEN_CLIENT_URLS=.*\ETCD_LISTEN_CLIENT_URLS="http://0.0.0.0:4001"\g' /etc/etcd/etcd.conf
-sed -i 's\^#ETCD_INITIAL_ADVERTISE_PEER_URLS=.*\ETCD_INITIAL_ADVERTISE_PEER_URLS="http://'$HOSTNAME':2380"\g' /etc/etcd/etcd.conf
-sed -i 's\^ETCD_ADVERTISE_CLIENT_URLS=.*\ETCD_ADVERTISE_CLIENT_URLS="http://'$HOSTNAME':4001"\g' /etc/etcd/etcd.conf
+sed -i 's\^#ETCD_INITIAL_ADVERTISE_PEER_URLS=.*\ETCD_INITIAL_ADVERTISE_PEER_URLS="http://0.0.0.0:2380"\g' /etc/etcd/etcd.conf
+sed -i 's\^#ETCD_INITIAL_CLUSTER=.*\ETCD_INITIAL_CLUSTER="'$HOSTNAME'=http://0.0.0.0:2380"\g' /etc/etcd/etcd.conf
+sed -i 's\^ETCD_ADVERTISE_CLIENT_URLS=.*\ETCD_ADVERTISE_CLIENT_URLS="http://0.0.0.0:4001"\g' /etc/etcd/etcd.conf
 
 sed -i 's/^KUBE_API_ADDRESS=.*/KUBE_API_ADDRESS="--address=0.0.0.0"/g' /etc/kubernetes/apiserver
 sed -i "s/127.0.0.1:4001/kube-master:4001/g" /etc/kubernetes/apiserver

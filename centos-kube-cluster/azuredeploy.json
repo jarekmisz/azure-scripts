@@ -149,6 +149,7 @@
 		"type": "Microsoft.Network/networkInterfaces",
 		"name": "nicMaster",
 		"apiVersion": "2015-05-01-preview",
+		"dependsOn": ["[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"],
 		"location": "[resourceGroup().location]",
 		"properties": {
 			"ipConfigurations": [{
@@ -291,6 +292,7 @@
 		},
 		"dependsOn": ["[concat('Microsoft.Network/networkInterfaces/', 'nicMinion', copyIndex())]",
 		"[concat('Microsoft.Storage/storageAccounts/', parameters('newStorageAccountName'))]",
+		"[concat('Microsoft.Compute/virtualMachines/', 'kube-master')]",
 		"[concat('Microsoft.Compute/availabilitySets/', variables('availabilitySetName'))]"],
 		"properties": {
 			"availabilitySet": {
