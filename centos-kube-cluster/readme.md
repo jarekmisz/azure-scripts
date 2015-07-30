@@ -13,6 +13,7 @@ The naming convention:
 
 Couple comments on networking:
 There are two layers of networking:
+
 1. The Azure virtual network, on which the VMs reside:
 * kubeVNET - 10.11.50.0/16
 * Subnet-1 - 10.11.50.0/24
@@ -25,6 +26,19 @@ The VMs get static addresses on Subnet-1:
 | kube-minion0 | 10.11.50.10 |
 | ... | ... |
 | kube-minion9 | 10.11.50.19 |
+
+2. Ovelay network managed by flannel that is used by docker containers. The flannel network definition is shown below:
+
+{
+    "Network": "10.254.0.0/16",
+    "SubnetLen": 24,
+    "SubnetMin": "10.254.50.0",
+    "SubnetMax": "10.254.199.0",
+    "Backend": {
+        "Type": "vxlan",
+        "VNI": 1
+    }
+}
 
 
 
