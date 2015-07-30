@@ -16,7 +16,9 @@ There are two layers of networking:
 1. The Azure virtual network, on which the VMs reside:
 * kubeVNET - 10.11.50.0/16
 * Subnet-1 - 10.11.50.0/24
+
 The VMs get static addresses on Subnet-1:
+
 | Node Name   | IP Address |
 |:--- |:---|
 | kube-master | 10.11.50.9 |
