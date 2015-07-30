@@ -15,6 +15,7 @@ Couple comments on networking:
 There are two layers of networking:
 
 1. The Azure virtual network, on which the VMs reside:
+
 * kubeVNET - 10.11.50.0/16
 * Subnet-1 - 10.11.50.0/24
 
@@ -27,8 +28,9 @@ The VMs get static addresses on Subnet-1:
 | ... | ... |
 | kube-minion9 | 10.11.50.19 |
 
-2. Ovelay network managed by flannel that is used by docker containers. The flannel network definition is shown below:
+The template sets up the Azure DNS zone so that the name resolution works properly in the Azure network. Passing the assigned Azure DNS server for the zone is a bit tricky. I'm using the 255.255.255.255 as a place holder in the interface definition. The assigned DNS server name is retrieved using the ARM built-in function "reference". This name is passed to the shell node setup scripts as an input parameter. Then the logic in the scripts finds the IP address for the asigned Azure DNS Server and updates the place holder with the actual IP address.
 
+2. Ovelay network managed by flannel that is used by docker containers. The flannel network definition is shown below:
 {
     "Network": "10.254.0.0/16",
     "SubnetLen": 24,
@@ -39,6 +41,7 @@ The VMs get static addresses on Subnet-1:
         "VNI": 1
     }
 }
+Flannel will asign one of the subnets to a node in the kubernetes cluster. Something like: 10.254.x.0. Consequently, the docker containers that get spinned up on that node will get IP addresses on that subnet. Flannel will route between the subnets so that a solution may consist of multiple pods that reside on multiple nodes (minions).
 
 
 
