@@ -47,7 +47,14 @@ sed -i 's/^KUBELET_ADDRESS=.*/KUBELET_ADDRESS="--address=0.0.0.0"/g' /etc/kubern
 sed -i 's/^KUBELET_HOSTNAME=.*/KUBELET_HOSTNAME=/g' /etc/kubernetes/kubelet
 sed -i 's\^KUBELET_API_SERVER=.*\KUBELET_API_SERVER="--api_servers=http://kube-master:8080"\g' /etc/kubernetes/kubelet
 
-for service in kube-proxy kubelet docker flanneld; do
+service=flanneld
+systemctl enable $service
+systemctl restart $service
+systemctl status $service 
+
+sleep 10
+
+for service in kube-proxy kubelet docker; do
     systemctl enable $service
     systemctl restart $service
     systemctl status $service 
