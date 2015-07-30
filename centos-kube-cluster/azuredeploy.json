@@ -253,6 +253,7 @@
 		"type": "Microsoft.Network/networkInterfaces",
 		"name": "[concat('nicMinion', copyindex())]",
 		"apiVersion": "2015-05-01-preview",
+		"dependsOn": ["[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"],
 		"location": "[resourceGroup().location]",
 		"copy": {
 			"name": "networkInterfaceLoop",
