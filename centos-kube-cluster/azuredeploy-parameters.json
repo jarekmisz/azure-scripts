@@ -2,7 +2,7 @@
 	"adminUsername": {
 		"value": "jarek"
 	},
-	"newStorageAccountName":{
+	"newStorageAccountName": {
 		"value": "kubeclustersa"
 	},
 	"numberOfInstances": {
@@ -10,5 +10,11 @@
 	},
 	"vmsize": {
 		"value": "Standard_D2"
+	},
+	"newZoneName": {
+		"value": "reddog.microsoft.com"
+	},
+	"newRecordNamePrefix": {
+		"value": "kube-"
 	}
 }

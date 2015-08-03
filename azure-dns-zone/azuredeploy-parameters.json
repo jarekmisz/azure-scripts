@@ -1,8 +1,8 @@
 ﻿{
     "newZoneName": {
-	  "value": "azurednsexample.com"
+	  "value": "reddog.microsoft.com"
     },
-    "newRecordName": {
-	  "value": "something"
+    "newRecordNamePrefix": {
+	  "value": "kube-"
     }
 }
