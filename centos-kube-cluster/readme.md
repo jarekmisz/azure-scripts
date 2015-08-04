@@ -45,6 +45,16 @@ The template sets up the Azure DNS zone so that the name resolution works proper
 
 Flannel will asign one of the subnets to a node in the kubernetes cluster. Something like: 10.254.x.0. Consequently, the docker containers that get spinned up on that node will get IP addresses on that subnet. Flannel will route between the subnets so that a solution may consist of multiple pods that reside on multiple nodes (minions).
 
+The template expects the following parameters:
 
+| Name   | Description | Default Value |
+|:--- |:---|:---|
+| adminUsername  | Administrator user name used when provisioning virtual machines  | |
+| adminPassword  | Administrator password used when provisioning virtual machines  | |
+| newStorageAccountName | Unique namespace for a new storage account where the virtual machine's disks will be placed | |
+| numberOfInstances | Number of kubertnetes nodes (minions) to be created. The current maximum is set to 10. It can be easily increased by editing the template | 2 |
+| vmSize | Size of the Virtual Machine | Standard_D2 |
+| newZoneName | The name of the DNS zone to be created. To use the Azure assigned DNS server you need to keep the default setting | reddog.microsoft.com |
+| newRecordNamePrefix | The hostname prefix of the DNS record to be created.  The name is relative to the zone, not the FQDN | kube- |
 
 
