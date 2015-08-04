@@ -31,6 +31,7 @@ The VMs get static addresses on Subnet-1:
 The template sets up the Azure DNS zone so that the name resolution works properly in the Azure network. Passing the Azure-assigned DNS server IP to the VMs is a bit tricky. I'm using the 255.255.255.255 as a place holder in the interface definition that gets propagated to the VM at the boot time. The assigned DNS server name is retrieved using the ARM built-in function "reference" on the zone NS record. This name is passed to the shell node setup scripts as an input parameter. Then the logic in the scripts finds the IP address for the asigned Azure DNS Server and updates the place holder with the actual IP address.
 
 2. Ovelay network managed by flannel that is used by docker containers. The flannel network definition is shown below:
+
 {
     "Network": "10.254.0.0/16",
     "SubnetLen": 24,

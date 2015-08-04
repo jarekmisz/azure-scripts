@@ -1,7 +1,7 @@
 {
-  "itemDisplayName": "Deploys a N-node CentOS Cluster",
-  "description": "This template deploys a 2-10 node CentOS cluster with 2 networks.",
-  "summary": "This template deploys a 2-10 node CentOS cluster with a private and a public network, a load-balancer and a custom script that configures the networks on the CentOS nodes.",
-  "githubUsername": "gmarchet",
-  "dateUpdated": "2015-05-22"
+  "itemDisplayName": "Deploys kubernetes cluster on CentOS 7.1 virtual machines",
+  "description": "This template deploys a kubernetes master with 2-10 nodes on CentOS 7.1",
+  "summary": "This template deploys a kubernetes cluster that consists of a master and 2-10 nodes (minions). The deployment has been tested on CentOS 7.1. It utilizes systemd and etcd. There is just one instance of etcd that runs on the kubernetes master. The master constitues a single point of failure so it really doesn't matter if etcd is highly available.",
+  "githubUsername": "jarekmisz",
+  "dateUpdated": "2015-08-03"
 }
