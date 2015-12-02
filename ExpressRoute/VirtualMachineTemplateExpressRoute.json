@@ -101,7 +101,7 @@
 		"publicIPAddressName": "[concat('PIP',parameters('vmName'), uniqueString(resourceGroup().id))]",
 		"virtualNetworkName": "TestVnet",
 		"dnsNameForPublicIP": "[concat('DNS',parameters('vmName'))]",
-		"vnetID": "[resourceId('/subscriptions/f6c0cb91-aaca-4ff3-9bd9-4be01af16a8b/resourceGroups/ChicagoER_RG/providers/Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]"
+		"vnetID": "[resourceId('subscriptions/f6c0cb91-aaca-4ff3-9bd9-4be01af16a8b/resourceGroups/ChicagoER_RG/providers/Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]"
 	},
 	"resources": [{
 		"apiVersion": "2015-05-01-preview",
