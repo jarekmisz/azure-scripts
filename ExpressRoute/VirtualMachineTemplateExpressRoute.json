@@ -90,18 +90,17 @@
 	"variables": {
 		"imagePublisher": "MicrosoftWindowsServer",
 		"imageOffer": "WindowsServer",
-		"addressPrefix": "10.0.0.0/16",
 		"subnetName": "Subnet-1",
-		"subnetPrefix": "10.0.0.0/24",
 		"storageAccountType": "Standard_LRS",
 		"publicIPAddressType": "Dynamic",
 		"vmStorageAccountContainerName": "vhds",
 		"subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
 		"nicName": "[concat('Nic', uniqueString(parameters('vmName'), resourceGroup().id))]",
 		"publicIPAddressName": "[concat('PIP',parameters('vmName'), uniqueString(resourceGroup().id))]",
+		"virtualNetworkResourceGroup": "ChicagoER_RG",
 		"virtualNetworkName": "TestVnet",
 		"dnsNameForPublicIP": "[concat('DNS',parameters('vmName'))]",
-		"vnetID": "[resourceId('subscriptions/f6c0cb91-aaca-4ff3-9bd9-4be01af16a8b/resourceGroups/ChicagoER_RG/providers/Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]"
+		"vnetID": "[resourceId(variables('virtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]"
 	},
 	"resources": [{
 		"apiVersion": "2015-05-01-preview",
