@@ -58,12 +58,14 @@
         },
         "storageAccountName": {
             "type": "string",
+            "defaultValue": "jmwindowssa",
             "metadata": {
                 "description": "Storage Account Name."
             }
         },
         "adminUsername": {
             "type": "string",
+            "defaultValue": "Administrator",
             "metadata": {
                 "description": "Username for the Virtual Machine."
             }
@@ -130,9 +132,8 @@
                 "displayName": "NetworkInterface"
             },
             "dependsOn": [
-                "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
-                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
-            ],
+                "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]"
+                            ],
             "properties": {
                 "ipConfigurations": [
                     {
