@@ -31,7 +31,7 @@
         },
         "location": {
             "type": "string",
-            "defaultValue": "West US",
+            "defaultValue": "Central US",
             "allowedValues": [
                 "East Asia",
                 "Southeast Asia",
@@ -93,7 +93,7 @@
         "imagePublisher": "MicrosoftWindowsServer",
         "imageOffer": "WindowsServer",
         "addressPrefix": "10.0.0.0/16",
-        "subnetName": "Subnet",
+        "subnetName": "Subnet-1",
         "subnetPrefix": "10.0.0.0/24",
         "storageAccountType": "Standard_LRS",
         "publicIPAddressType": "Dynamic",
@@ -101,7 +101,7 @@
         "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
         "nicName": "[concat('Nic', uniqueString(parameters('vmName'), resourceGroup().id))]",
         "publicIPAddressName": "[concat('PIP',parameters('vmName'), uniqueString(resourceGroup().id))]",
-        "virtualNetworkName": "[concat('VNet',parameters('vmName'), uniqueString(resourceGroup().id))]",
+        "virtualNetworkName": "TestVnet",
         "dnsNameForPublicIP": "[concat('DNS',parameters('vmName'), uniqueString(resourceGroup().id))]",
         "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]"
     },
@@ -119,30 +119,6 @@
                 "dnsSettings": {
                     "domainNameLabel": "[toLower(variables('dnsNameForPublicIP'))]"
                 }
-            }
-        },
-        {
-            "apiVersion": "2015-05-01-preview",
-            "type": "Microsoft.Network/virtualNetworks",
-            "name": "[variables('virtualNetworkName')]",
-            "location": "[parameters('location')]",
-            "tags": {
-                "displayName": "VirtualNetwork"
-            },
-            "properties": {
-                "addressSpace": {
-                    "addressPrefixes": [
-                        "[variables('addressPrefix')]"
-                    ]
-                },
-                "subnets": [
-                    {
-                        "name": "[variables('subnetName')]",
-                        "properties": {
-                            "addressPrefix": "[variables('subnetPrefix')]"
-                        }
-                    }
-                ]
             }
         },
         {
