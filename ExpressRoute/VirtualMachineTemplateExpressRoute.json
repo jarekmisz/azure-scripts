@@ -56,7 +56,7 @@
 		},
 		"storageAccountName": {
 			"type": "string",
-			"defaultValue": "jmwindowssa",
+			"defaultValue": "jmcentralwinsa01",
 			"metadata": {
 				"description": "Storage Account Name."
 			}
