@@ -54,9 +54,16 @@
 				"description": "Azure Locations. If you dont see a location you want, please check with your administrator."
 			}
 		},
+		"securityGroupName": {
+			"type": "string",
+			"allowedValues": ["defaultNSGWin"],
+			"metadata": {
+				"description": "Default NSG for Windows. Allows rdp, http, and https."
+			}
+		},
 		"storageAccountName": {
 			"type": "string",
-			"defaultValue": "jmcentralwinsa01",
+			"allowedValues": "jmcentralwinsa01",
 			"metadata": {
 				"description": "Storage Account Name."
 			}
@@ -97,49 +104,13 @@
 		"subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
 		"nicName": "[concat('Nic', uniqueString(parameters('vmName'), resourceGroup().id))]",
 		"publicIPAddressName": "[concat('PIP',parameters('vmName'), uniqueString(resourceGroup().id))]",
-		"securityGroupName": "[concat('NSG',parameters('vmName'))]",
 		"virtualNetworkResourceGroup": "ChicagoER_RG",
 		"virtualNetworkName": "TestVnet",
 		"dnsNameForPublicIP": "[concat('DNS',parameters('vmName'))]",
-		"vnetID": "[resourceId(variables('virtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]"
+		"vnetID": "[resourceId(variables('virtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+		"nsgID": "[resourceId(variables('virtualNetworkResourceGroup'), 'Microsoft.Network/networkSecurityGroups', parameters('securityGroupName'))]"
 	},
-	"resources": [{
-		"apiVersion": "2015-05-01-preview",
-		"type": "Microsoft.Network/publicIPAddresses",
-		"name": "[variables('publicIPAddressName')]",
-		"location": "[parameters('location')]",
-		"tags": {
-			"displayName": "PublicIPAddress"
-		},
-		"properties": {
-			"publicIPAllocationMethod": "[variables('publicIPAddressType')]",
-			"dnsSettings": {
-				"domainNameLabel": "[toLower(variables('dnsNameForPublicIP'))]"
-			}
-		}
-	},
-	{
-		"apiVersion": "2015-05-01-preview",
-		"type": "Microsoft.Network/networkSecurityGroups",
-		"name": "[variables('securityGroupName')]",
-		"location": "[resourceGroup().location]",
-		"properties": {
-			"securityRules": [{
-				"name": "allow-rdp",
-				"properties": {
-					"description": "Allows RDP traffic",
-					"protocol": "Tcp",
-					"sourcePortRange": "*",
-					"destinationPortRange": "3389",
-					"sourceAddressPrefix": "*",
-					"destinationAddressPrefix": "*",
-					"access": "Allow",
-					"priority": 100,
-					"direction": "Inbound"
-				}
-			}]
-		}
-	},
+	"resources": [
 	{
 		"type": "Microsoft.Storage/storageAccounts",
 		"name": "[parameters('storageAccountName')]",
@@ -167,7 +138,7 @@
 						"id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
 					},
 					"networkSecurityGroup": {
-						"id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('securityGroupName'))]"
+						"id": "[variables('nsgID')]"
 					},
 					"subnet": {
 						"id": "[variables('subnetRef')]"
