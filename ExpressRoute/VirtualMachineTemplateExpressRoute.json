@@ -118,19 +118,19 @@
 			}
 		}
 	},
-		{
+	{
 		"apiVersion": "2015-05-01-preview",
 		"type": "Microsoft.Network/networkSecurityGroups",
 		"name": "[variables('securityGroupName')]",
 		"location": "[resourceGroup().location]",
 		"properties": {
 			"securityRules": [{
-				"name": "SSH",
+				"name": "allow-rdp",
 				"properties": {
-					"description": "Allows SSH traffic",
+					"description": "Allows RDP traffic",
 					"protocol": "Tcp",
-					"sourcePortRange": "22",
-					"destinationPortRange": "22",
+					"sourcePortRange": "*",
+					"destinationPortRange": "3389",
 					"sourceAddressPrefix": "*",
 					"destinationAddressPrefix": "*",
 					"access": "Allow",
@@ -165,6 +165,9 @@
 					"privateIPAllocationMethod": "Dynamic",
 					"publicIPAddress": {
 						"id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+					},
+					"networkSecurityGroup": {
+						"id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('securityGroupName'))]"
 					},
 					"subnet": {
 						"id": "[variables('subnetRef')]"
