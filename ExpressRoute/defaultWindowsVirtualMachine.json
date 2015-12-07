@@ -44,8 +44,8 @@
 		},
 		"securityGroupName": {
 			"type": "string",
-			"allowedValues": ["defaultNSGWin"],
-			"defaultValue": "defaultNSGWin",
+			"allowedValues": ["defaultWinNSG"],
+			"defaultValue": "defaultWinNSG",
 			"metadata": {
 				"description": "Default NSG for Windows. Allows rdp, http, and https."
 			}
