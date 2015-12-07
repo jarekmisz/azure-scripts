@@ -105,7 +105,7 @@
 		"subnetName": "Subnet-1",
 		"commonLocationResourceGroup": "[concat('common',resourceGroup().location,'RG')]",
 		"storageAccountName": "[concat('mc', parameters('storageAccountType'), resourceGroup().location,'sa', string(parameters('storageAccountIndex')))]",
-		"vmStorageAccountID": "[resourceId(variables('commonLocationResourceGroup'),Microsoft.Storage/storageAccounts, parameters('storageAccountName'))]",
+		"vmStorageAccountID": "[resourceId(variables('commonLocationResourceGroup'),Microsoft.Storage/storageAccounts, variables('storageAccountName'))]",
 		"storageAccountType": "[concat(parameters('storageAccountType'),'_LRS')]",
 		"publicIPAddressType": "Dynamic",
 		"vmStorageAccountContainerName": "vhds",
