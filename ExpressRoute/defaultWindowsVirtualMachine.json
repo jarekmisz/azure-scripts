@@ -124,7 +124,6 @@
 		"tags": {
 			"displayName": "NetworkInterface"
 		},
-		"dependsOn": 
 		"properties": {
 			"ipConfigurations": [{
 				"name": "ipconfig1",
