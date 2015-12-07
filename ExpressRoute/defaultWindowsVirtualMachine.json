@@ -105,7 +105,6 @@
 		"subnetName": "Subnet-1",
 		"commonLocationResourceGroup": "[concat('common',resourceGroup().location,'RG')]",
 		"storageAccountName": "[concat('mc', parameters('storageAccountType'), resourceGroup().location,'sa', string(parameters('storageAccountIndex')))]",
-		"vmStorageAccountID": "[resourceId(variables('commonLocationResourceGroup'), 'Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
 		"storageAccountType": "[concat(parameters('storageAccountType'),'_LRS')]",
 		"publicIPAddressType": "Dynamic",
 		"vmStorageAccountContainerName": "vhds",
@@ -119,15 +118,6 @@
 		"nsgID": "[resourceId(variables('virtualNetworkResourceGroup'), 'Microsoft.Network/networkSecurityGroups', parameters('securityGroupName'))]"
 	},
 	"resources": [{
-		"type": "Microsoft.Storage/storageAccounts",
-		"name": "[parameters('storageAccountName')]",
-		"apiVersion": "2015-05-01-preview",
-		"location": "[resourceGroup().location]",
-		"properties": {
-			"accountType": "[variables('storageAccountType')]"
-		}
-	},
-	{
 		"apiVersion": "2015-05-01-preview",
 		"type": "Microsoft.Network/networkInterfaces",
 		"name": "[variables('nicName')]",
@@ -182,7 +172,7 @@
 				"osDisk": {
 					"name": "osdisk",
 					"vhd": {
-						"uri": "[concat('http://',parameters('storageAccountName'),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',parameters('vmName'),'.vhd')]"
+						"uri": "[concat('http://',variables('storageAccountName'),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',parameters('vmName'),'.vhd')]"
 					},
 					"caching": "ReadWrite",
 					"createOption": "FromImage"
