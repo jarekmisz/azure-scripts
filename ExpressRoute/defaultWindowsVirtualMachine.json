@@ -60,7 +60,7 @@
 		"storageAccountIndex": {
 			"type": "int",
 			"allowedValues": [0,
-			1
+			1,
 			2,
 			3,
 			4,
@@ -103,7 +103,7 @@
 		"imagePublisher": "MicrosoftWindowsServer",
 		"imageOffer": "WindowsServer",
 		"subnetName": "Subnet-1",
-		"commonLocationResourceGroup": "[concat('common',resourceGroup().location,'RG')],
+		"commonLocationResourceGroup": "[concat('common',resourceGroup().location,'RG')]",
 		"storageAccountName": "[concat('mc', parameters('storageAccountType'), resourceGroup().location,'sa', string(parameters('storageAccountIndex')))]",
 		"vmStorageAccountID": "[resourceId(variables('commonLocationResourceGroup'),Microsoft.Storage/storageAccounts, parameters('storageAccountName'))]",
 		"storageAccountType": "[concat(parameters('storageAccountType'),'_LRS')]",
