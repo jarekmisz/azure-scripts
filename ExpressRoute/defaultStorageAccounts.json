@@ -12,7 +12,6 @@
 		},
 		"numberOfStorageAccounts": {
 			"type": "int",
-			"defaultValue": 2,
 			"allowedValues": [2,
 			3,
 			4,
