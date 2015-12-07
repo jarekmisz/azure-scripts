@@ -32,24 +32,12 @@
 		"location": {
 			"type": "string",
 			"defaultValue": "Central US",
-			"allowedValues": ["East Asia",
-			"Southeast Asia",
-			"Central US",
+			"allowedValues": ["Central US",
 			"East US",
 			"East US 2",
 			"West US",
 			"North Central US",
-			"South Central US",
-			"North Europe",
-			"West Europe",
-			"Japan West",
-			"Japan East",
-			"Brazil South",
-			"Australia East",
-			"Australia Southeast",
-			"Central India",
-			"West India",
-			"South India"],
+			"South Central US"],
 			"metadata": {
 				"description": "Azure Locations. If you dont see a location you want, please check with your administrator."
 			}
@@ -63,7 +51,8 @@
 		},
 		"storageAccountName": {
 			"type": "string",
-			"allowedValues": "jmcentralwinsa01",
+			"allowedValues": ["defaultstorageaccount001",
+			"defaultstorageaccount002"],
 			"metadata": {
 				"description": "Storage Account Name."
 			}
@@ -98,6 +87,8 @@
 		"imagePublisher": "MicrosoftWindowsServer",
 		"imageOffer": "WindowsServer",
 		"subnetName": "Subnet-1",
+		"commonLocationResourceGroup": "[concat('common',resourceGroup().location,'RG')],
+		"vmStorageAccountID": "[resourceId(variables('commonLocationResourceGroup'),Microsoft.Storage/storageAccounts, parameters('storageAccountName'))]",
 		"storageAccountType": "Standard_LRS",
 		"publicIPAddressType": "Dynamic",
 		"vmStorageAccountContainerName": "vhds",
@@ -110,8 +101,7 @@
 		"vnetID": "[resourceId(variables('virtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
 		"nsgID": "[resourceId(variables('virtualNetworkResourceGroup'), 'Microsoft.Network/networkSecurityGroups', parameters('securityGroupName'))]"
 	},
-	"resources": [
-	{
+	"resources": [{
 		"type": "Microsoft.Storage/storageAccounts",
 		"name": "[parameters('storageAccountName')]",
 		"apiVersion": "2015-05-01-preview",

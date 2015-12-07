@@ -1,0 +1,39 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"numberOfStorageAccounts": {
+			"type": "int",
+			"defaultValue": 2,
+			"allowedValues": [2,
+			3,
+			4,
+			5,
+			6,
+			7,
+			8,
+			9,
+			10],
+			"metadata": {
+				"description": "Number of Storage Account to deploy (2-10)"
+			}
+		},
+	},
+	"variables": {
+		"premiumLocationSAName": "[concat('premium',resourceGroup().location,'sa')]"
+	},
+	"resources": [{
+		"type": "Microsoft.Storage/storageAccounts",
+		"name": "[concat(variables('premiumLocationSAName'), copyindex())]",
+		"apiVersion": "2015-06-15",
+		"location": "[resourceGroup().location]",
+		"copy": {
+			"name": "storageAccountLoop",
+			"count": "[parameters('numberOfStorageAccounts')]"
+		},
+		"properties": {
+			"accountType": "Premium_LRS"
+		}
+	}]
+}
+
