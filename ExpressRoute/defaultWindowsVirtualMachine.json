@@ -110,7 +110,6 @@
 		"vmStorageAccountContainerName": "vhds",
 		"subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
 		"nicName": "[concat('Nic', uniqueString(parameters('vmName'), resourceGroup().id))]",
-		"publicIPAddressName": "[concat('PIP',parameters('vmName'), uniqueString(resourceGroup().id))]",
 		"virtualNetworkResourceGroup": "ChicagoER_RG",
 		"virtualNetworkName": "TestVnet",
 		"dnsNameForPublicIP": "[concat('DNS',parameters('vmName'))]",
@@ -125,15 +124,12 @@
 		"tags": {
 			"displayName": "NetworkInterface"
 		},
-		"dependsOn": ["[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]"],
+		"dependsOn": 
 		"properties": {
 			"ipConfigurations": [{
 				"name": "ipconfig1",
 				"properties": {
 					"privateIPAllocationMethod": "Dynamic",
-					"publicIPAddress": {
-						"id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
-					},
 					"networkSecurityGroup": {
 						"id": "[variables('nsgID')]"
 					},
