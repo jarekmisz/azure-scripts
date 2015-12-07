@@ -45,12 +45,14 @@
 		"securityGroupName": {
 			"type": "string",
 			"allowedValues": ["defaultNSGWin"],
+			"defaultValue": "defaultNSGWin",
 			"metadata": {
 				"description": "Default NSG for Windows. Allows rdp, http, and https."
 			}
 		},
 		"storageAccountType": {
 			"type": "string",
+			"defaultValue": "standard",
 			"allowedValues": ["premium",
 			"standard"],
 			"metadata": {
