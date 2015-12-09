@@ -78,7 +78,7 @@
 		"storageAccountName": "[concat('mc', parameters('storageAccountType'), toLower(parameters('vmName')),'sa')]",
 		"storageAccountType": "[concat(parameters('storageAccountType'),'_LRS')]",
 		"vmStorageAccountContainerName": "vhds",
-		"nicName": "[concat('Nic', toLower(parameters('vmName')), resourceGroup().id)]",
+		"nicName": "[concat('Nic', uniqueString(parameters('vmName'), resourceGroup().id))]",
 		"virtualNetworkResourceGroup": "ChicagoER_RG",
 		"virtualNetworkName": "TestVnet",
 		"subnetName": "Subnet-1",
