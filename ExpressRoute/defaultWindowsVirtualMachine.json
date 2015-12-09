@@ -78,13 +78,13 @@
 		"storageAccountName": "[concat('mc', parameters('storageAccountType'), toLower(parameters('vmName')),'sa')]",
 		"storageAccountType": "[concat(parameters('storageAccountType'),'_LRS')]",
 		"vmStorageAccountContainerName": "vhds",
-		"nicName": "[concat('Nic', toLower(parameters('vmName')), resourceGroup().id))]",
+		"nicName": "[concat('Nic', toLower(parameters('vmName')), resourceGroup().id)]",
 		"virtualNetworkResourceGroup": "ChicagoER_RG",
 		"virtualNetworkName": "TestVnet",
 		"subnetName": "Subnet-1",
 		"subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
 		"vnetID": "[resourceId(variables('virtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
-		"networkSecurityGroupName": "[concat('mcWindowsDefault', toLower(parameters('vmName')),'NSG'))]",
+		"networkSecurityGroupName": "[concat('mcWindowsDefault', toLower(parameters('vmName')),'NSG')]",
 		"nsgID": "[resourceId( 'Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]"
 	},
 	"resources": [{
