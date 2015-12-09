@@ -85,7 +85,7 @@
 		"subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
 		"vnetID": "[resourceId(variables('virtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
 		"networkSecurityGroupName": "[concat('mcWindowsDefault', toLower(parameters('vmName')),'NSG')]",
-		"nsgID": "[resourceId( 'Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]"
+		"nsgID": "[resourceId( 'Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
 	},
 	"resources": [{
 		"type": "Microsoft.Storage/storageAccounts",
