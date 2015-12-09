@@ -75,7 +75,7 @@
 	"variables": {
 		"imagePublisher": "MicrosoftWindowsServer",
 		"imageOffer": "WindowsServer",
-		"storageAccountName": "[concat('mc', parameters('storageAccountType'), toLower(parameters('vmName')),'sa'))]",
+		"storageAccountName": "[concat('mc', parameters('storageAccountType'), toLower(parameters('vmName')),'sa')]",
 		"storageAccountType": "[concat(parameters('storageAccountType'),'_LRS')]",
 		"vmStorageAccountContainerName": "vhds",
 		"nicName": "[concat('Nic', toLower(parameters('vmName')), resourceGroup().id))]",
