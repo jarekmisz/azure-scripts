@@ -89,9 +89,9 @@
 	},
 	"resources": [{
 		"type": "Microsoft.Storage/storageAccounts",
-		"name": "[variables('newStorageAccountName')]",
+		"name": "[variables('storageAccountName')]",
 		"apiVersion": "2015-05-01-preview",
-		"location": "[variables('location')]",
+		"location": "[resourceGroup().location]",
 		"properties": {
 			"accountType": "[variables('storageAccountType')]"
 		}
