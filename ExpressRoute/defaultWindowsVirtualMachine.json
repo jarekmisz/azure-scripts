@@ -177,7 +177,7 @@
 			"tags": {
 				"displayName": "VirtualMachine"
 			},
-			"dependsOn": ["[concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]",
+			"dependsOn": ["[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
 			"[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"],
 			"properties": {
 				"hardwareProfile": {
