@@ -1,0 +1,25 @@
+  {
+   "apiVersion": "2015-05-01-preview",
+   "type": "Microsoft.Network/networkInterfaces",
+   "name": "[variables('nicName')]",
+   "location": "[parameters('location')]",
+   "tags": {
+    "displayName": "NetworkInterface"
+   },
+   "dependsOn": ["[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]"],
+   "properties": {
+    "ipConfigurations": [{
+     "name": "ipconfig1",
+     "properties": {
+      "privateIPAllocationMethod": "Dynamic",
+      "subnet": {
+       "id": "[variables('subnetRef')]"
+      }
+     }
+    }]
+    ,
+      "networkSecurityGroup": {
+       "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
+      }
+   }
+  }

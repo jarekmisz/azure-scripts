@@ -85,130 +85,130 @@
 		"subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
 		"vnetID": "[resourceId(variables('virtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
 		"networkSecurityGroupName": "[concat('mcWindowsDefault', toLower(parameters('vmName')),'NSG')]"
-		},
+	},
 	"resources": [{
-			"type": "Microsoft.Storage/storageAccounts",
-			"name": "[variables('storageAccountName')]",
-			"apiVersion": "2015-05-01-preview",
-			"location": "[resourceGroup().location]",
-			"properties": {
-				"accountType": "[variables('storageAccountType')]"
-			}
-		},
-		{
-			"apiVersion": "2015-05-01-preview",
-			"type": "Microsoft.Network/networkSecurityGroups",
-			"name": "[variables('networkSecurityGroupName')]",
-			"location": "[resourceGroup().location]",
-			"properties": {
-				"securityRules": [{
-					"name": "allow-rdp",
-					"properties": {
-						"description": "Allows RDP traffic",
-						"protocol": "Tcp",
-						"sourcePortRange": "*",
-						"destinationPortRange": "3389",
-						"sourceAddressPrefix": "*",
-						"destinationAddressPrefix": "*",
-						"access": "Allow",
-						"priority": 100,
-						"direction": "Inbound"
-					}
-				},
-				{
-					"name": "allow-http",
-					"properties": {
-						"description": "Allow WEB",
-						"protocol": "Tcp",
-						"sourcePortRange": "*",
-						"destinationPortRange": "80",
-						"sourceAddressPrefix": "*",
-						"destinationAddressPrefix": "*",
-						"access": "Allow",
-						"priority": 200,
-						"direction": "Inbound"
-					}
-				},
-				{
-					"name": "allow-https",
-					"properties": {
-						"description": "Allow secure WEB",
-						"protocol": "Tcp",
-						"sourcePortRange": "*",
-						"destinationPortRange": "443",
-						"sourceAddressPrefix": "*",
-						"destinationAddressPrefix": "*",
-						"access": "Allow",
-						"priority": 300,
-						"direction": "Inbound"
-					}
-				}]
-			}
-		},
-		{
-			"apiVersion": "2015-05-01-preview",
-			"type": "Microsoft.Network/networkInterfaces",
-			"name": "[variables('nicName')]",
-			"location": "[parameters('location')]",
-			"tags": {
-				"displayName": "NetworkInterface"
-			},
-			"dependsOn": ["[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]"],
-			"properties": {
-				"ipConfigurations": [{
-					"name": "ipconfig1",
-					"properties": {
-						"privateIPAllocationMethod": "Dynamic",
-						"subnet": {
-							"id": "[variables('subnetRef')]"
-						},
-						"networkSecurityGroup": {
-							"id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
-						}
-					}
-				}]
-			}
-		},
-		{
-			"apiVersion": "2015-05-01-preview",
-			"type": "Microsoft.Compute/virtualMachines",
-			"name": "[parameters('vmName')]",
-			"location": "[parameters('location')]",
-			"tags": {
-				"displayName": "VirtualMachine"
-			},
-			"dependsOn": ["[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
-			"[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"],
-			"properties": {
-				"hardwareProfile": {
-					"vmSize": "[parameters('vmSize')]"
-				},
-				"osProfile": {
-					"computerName": "[parameters('vmName')]",
-					"adminUsername": "[parameters('adminUsername')]",
-					"adminPassword": "[parameters('adminPassword')]"
-				},
-				"storageProfile": {
-					"imageReference": {
-						"publisher": "[variables('imagePublisher')]",
-						"offer": "[variables('imageOffer')]",
-						"sku": "[parameters('windowsOSVersion')]",
-						"version": "latest"
-					},
-					"osDisk": {
-						"name": "osdisk",
-						"vhd": {
-							"uri": "[concat('http://',variables('storageAccountName'),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',parameters('vmName'),'.vhd')]"
-						},
-						"caching": "ReadWrite",
-						"createOption": "FromImage"
-					}
-				},
-				"networkProfile": {
-					"networkInterfaces": [{
-						"id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
-					}]
+		"type": "Microsoft.Storage/storageAccounts",
+		"name": "[variables('storageAccountName')]",
+		"apiVersion": "2015-05-01-preview",
+		"location": "[resourceGroup().location]",
+		"properties": {
+			"accountType": "[variables('storageAccountType')]"
+		}
+	},
+	{
+		"apiVersion": "2015-05-01-preview",
+		"type": "Microsoft.Network/networkSecurityGroups",
+		"name": "[variables('networkSecurityGroupName')]",
+		"location": "[resourceGroup().location]",
+		"properties": {
+			"securityRules": [{
+				"name": "allow-rdp",
+				"properties": {
+					"description": "Allows RDP traffic",
+					"protocol": "Tcp",
+					"sourcePortRange": "*",
+					"destinationPortRange": "3389",
+					"sourceAddressPrefix": "*",
+					"destinationAddressPrefix": "*",
+					"access": "Allow",
+					"priority": 100,
+					"direction": "Inbound"
 				}
+			},
+			{
+				"name": "allow-http",
+				"properties": {
+					"description": "Allow WEB",
+					"protocol": "Tcp",
+					"sourcePortRange": "*",
+					"destinationPortRange": "80",
+					"sourceAddressPrefix": "*",
+					"destinationAddressPrefix": "*",
+					"access": "Allow",
+					"priority": 200,
+					"direction": "Inbound"
+				}
+			},
+			{
+				"name": "allow-https",
+				"properties": {
+					"description": "Allow secure WEB",
+					"protocol": "Tcp",
+					"sourcePortRange": "*",
+					"destinationPortRange": "443",
+					"sourceAddressPrefix": "*",
+					"destinationAddressPrefix": "*",
+					"access": "Allow",
+					"priority": 300,
+					"direction": "Inbound"
+				}
+			}]
+		}
+	},
+	{
+		"apiVersion": "2015-05-01-preview",
+		"type": "Microsoft.Network/networkInterfaces",
+		"name": "[variables('nicName')]",
+		"location": "[parameters('location')]",
+		"tags": {
+			"displayName": "NetworkInterface"
+		},
+		"dependsOn": ["[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]"],
+		"properties": {
+			"ipConfigurations": [{
+				"name": "ipconfig1",
+				"properties": {
+					"privateIPAllocationMethod": "Dynamic",
+					"subnet": {
+						"id": "[variables('subnetRef')]"
+					}
+				}
+			}],
+			"networkSecurityGroup": {
+				"id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
 			}
-		}]
-	}
+		}
+	},
+	{
+		"apiVersion": "2015-05-01-preview",
+		"type": "Microsoft.Compute/virtualMachines",
+		"name": "[parameters('vmName')]",
+		"location": "[parameters('location')]",
+		"tags": {
+			"displayName": "VirtualMachine"
+		},
+		"dependsOn": ["[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+		"[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"],
+		"properties": {
+			"hardwareProfile": {
+				"vmSize": "[parameters('vmSize')]"
+			},
+			"osProfile": {
+				"computerName": "[parameters('vmName')]",
+				"adminUsername": "[parameters('adminUsername')]",
+				"adminPassword": "[parameters('adminPassword')]"
+			},
+			"storageProfile": {
+				"imageReference": {
+					"publisher": "[variables('imagePublisher')]",
+					"offer": "[variables('imageOffer')]",
+					"sku": "[parameters('windowsOSVersion')]",
+					"version": "latest"
+				},
+				"osDisk": {
+					"name": "osdisk",
+					"vhd": {
+						"uri": "[concat('http://',variables('storageAccountName'),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',parameters('vmName'),'.vhd')]"
+					},
+					"caching": "ReadWrite",
+					"createOption": "FromImage"
+				}
+			},
+			"networkProfile": {
+				"networkInterfaces": [{
+					"id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
+				}]
+			}
+		}
+	}]
+}
