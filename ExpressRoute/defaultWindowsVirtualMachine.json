@@ -7,19 +7,13 @@
 		},
 		"vmSize": {
 			"type": "string",
-			"defaultValue": "Standard_A1",
-			"allowedValues": ["Standard_A0",
-			"Standard_A1",
-			"Standard_A2",
-			"Standard_A3",
-			"Standard_A4",
-			"Standard_A5",
-			"Standard_A6",
-			"Standard_A7",
-			"Standard_A8",
-			"Standard_A9",
-			"Standard_A10",
-			"Standard_A11"],
+			"defaultValue": "Standard_DS1",
+			"allowedValues": ["Standard_DS1",
+			"Standard_DS2",
+			"Standard_DS3",
+			"Standard_D1_V2",
+			"Standard_D2_V2",
+			"Standard_D3_V2"],
 			"metadata": {
 				"description": "Azure VM Sizes. If you dont see a size you want, please check with your administrator."
 			}
@@ -39,7 +33,7 @@
 		},
 		"storageAccountType": {
 			"type": "string",
-			"defaultValue": "standard",
+			"defaultValue": "premium",
 			"allowedValues": ["premium",
 			"standard"],
 			"metadata": {
