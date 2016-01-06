@@ -1,4 +1,4 @@
-﻿{
+{
 	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
 	"contentVersion": "1.0.0.0",
 	"parameters": {
@@ -18,77 +18,62 @@
 				"description": "Azure VM Sizes. If you dont see a size you want, please check with your administrator."
 			}
 		},
-		"location": {
+		"userImageStorageAccountName": {
 			"type": "string",
-			"defaultValue": "Central US",
-			"allowedValues": ["Central US",
-			"East US",
-			"East US 2",
-			"West US",
-			"North Central US",
-			"South Central US"],
+			"defaultValue": "mayorhelimages",
 			"metadata": {
-				"description": "Azure Locations. If you dont see a location you want, please check with your administrator."
+				"description": "This is the name of the your storage account"
 			}
 		},
-		"storageAccountType": {
+		"userImageStorageContainerName": {
 			"type": "string",
-			"defaultValue": "premium",
-			"allowedValues": ["premium",
-			"standard"],
+			"defaultValue": "vhds",
 			"metadata": {
-				"description": "Storage Account Type."
+				"description": "This is the name of the container in your storage account"
 			}
 		},
-		"adminUsername": {
+		"userImageVhdName": {
+			"type": "string",
+			"defaultValue": "rhel72-azure.vhd",
+			"metadata": {
+				"description": "This is the name of the your customized VHD"
+			}
+		},
+		"adminUserName": {
 			"type": "string",
 			"metadata": {
-				"description": "Username for the Virtual Machine."
+				"description": "UserName for the Virtual Machine"
 			}
 		},
 		"adminPassword": {
 			"type": "securestring",
 			"metadata": {
-				"description": "Password for the Virtual Machine."
+				"description": "Password for the Virtual Machine"
 			}
 		},
-		"windowsOSVersion": {
+		"osType": {
 			"type": "string",
-			"defaultValue": "2012-R2-Datacenter",
-			"allowedValues": ["2008-R2-SP1",
-			"2012-Datacenter",
-			"2012-R2-Datacenter",
-			"2016-Technical-Preview-3-with-Containers",
-			"Windows-Server-Technical-Preview"],
+			"defaultValue": "linux",
+			"allowedValues": ["windows",
+			"linux"],
 			"metadata": {
-				"description": "The Windows version for the VM. This will pick a fully patched image of this given Windows version. Allowed values: 2008-R2-SP1, 2012-Datacenter, 2012-R2-Datacenter."
+				"description": "This is the OS that your VM will be running"
 			}
 		}
 	},
 	"variables": {
-		"imagePublisher": "MicrosoftWindowsServer",
-		"imageOffer": "WindowsServer",
-		"storageAccountName": "[concat('mc', parameters('storageAccountType'), toLower(parameters('vmName')),'sa')]",
-		"storageAccountType": "[concat(parameters('storageAccountType'),'_LRS')]",
-		"vmStorageAccountContainerName": "vhds",
+		"location": "[resourceGroup().location]",
 		"nicName": "[concat('Nic', uniqueString(parameters('vmName'), resourceGroup().id))]",
 		"virtualNetworkResourceGroup": "ChicagoER_RG",
 		"virtualNetworkName": "TestVnet",
 		"subnetName": "Subnet-1",
 		"subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
 		"vnetID": "[resourceId(variables('virtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
-		"networkSecurityGroupName": "[concat('mcWindowsDefault', toLower(parameters('vmName')),'NSG')]"
+		"networkSecurityGroupName": "[concat('mc', parameters('osType'), 'Default', toLower(parameters('vmName')),'NSG')]",
+		"userImageName": "[concat('http://',parameters('userImageStorageAccountName'),'.blob.core.windows.net/',parameters('userImageStorageContainerName'),'/',parameters('userImageVhdName'))]",
+		"osDiskVhdName": "[concat('http://',parameters('userImageStorageAccountName'),'.blob.core.windows.net/vhds/',parameters('vmName'),'osDisk.vhd')]"
 	},
 	"resources": [{
-		"type": "Microsoft.Storage/storageAccounts",
-		"name": "[variables('storageAccountName')]",
-		"apiVersion": "2015-05-01-preview",
-		"location": "[resourceGroup().location]",
-		"properties": {
-			"accountType": "[variables('storageAccountType')]"
-		}
-	},
-	{
 		"apiVersion": "2015-05-01-preview",
 		"type": "Microsoft.Network/networkSecurityGroups",
 		"name": "[variables('networkSecurityGroupName')]",
@@ -97,10 +82,10 @@
 			"securityRules": [{
 				"name": "allow-rdp",
 				"properties": {
-					"description": "Allows RDP traffic",
+					"description": "Allows ssh traffic",
 					"protocol": "Tcp",
 					"sourcePortRange": "*",
-					"destinationPortRange": "3389",
+					"destinationPortRange": "22",
 					"sourceAddressPrefix": "*",
 					"destinationAddressPrefix": "*",
 					"access": "Allow",
@@ -163,15 +148,11 @@
 		}
 	},
 	{
-		"apiVersion": "2015-05-01-preview",
+		"apiVersion": "2015-06-15",
 		"type": "Microsoft.Compute/virtualMachines",
 		"name": "[parameters('vmName')]",
-		"location": "[parameters('location')]",
-		"tags": {
-			"displayName": "VirtualMachine"
-		},
-		"dependsOn": ["[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
-		"[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"],
+		"location": "[variables('location')]",
+		"dependsOn": ["[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"],
 		"properties": {
 			"hardwareProfile": {
 				"vmSize": "[parameters('vmSize')]"
@@ -182,26 +163,31 @@
 				"adminPassword": "[parameters('adminPassword')]"
 			},
 			"storageProfile": {
-				"imageReference": {
-					"publisher": "[variables('imagePublisher')]",
-					"offer": "[variables('imageOffer')]",
-					"sku": "[parameters('windowsOSVersion')]",
-					"version": "latest"
-				},
 				"osDisk": {
-					"name": "osdisk",
-					"vhd": {
-						"uri": "[concat('http://',variables('storageAccountName'),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',parameters('vmName'),'.vhd')]"
-					},
+					"name": "[concat(parameters('vmName'),'-osDisk')]",
+					"osType": "[parameters('osType')]",
 					"caching": "ReadWrite",
-					"createOption": "FromImage"
+					"createOption": "FromImage",
+					"image": {
+						"uri": "[variables('userImageName')]"
+					},
+					"vhd": {
+						"uri": "[variables('osDiskVhdName')]"
+					}
 				}
 			},
 			"networkProfile": {
 				"networkInterfaces": [{
 					"id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
 				}]
+			},
+			"diagnosticsProfile": {
+				"bootDiagnostics": {
+					"enabled": "true",
+					"storageUri": "[concat('http://',parameters('userImageStorageAccountName'),'.blob.core.windows.net')]"
+				}
 			}
 		}
 	}]
 }
+
