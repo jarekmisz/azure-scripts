@@ -127,7 +127,7 @@
 		"apiVersion": "2015-05-01-preview",
 		"type": "Microsoft.Network/networkInterfaces",
 		"name": "[variables('nicName')]",
-		"location": "[parameters('location')]",
+		"location": "[variables('location')]",
 		"tags": {
 			"displayName": "NetworkInterface"
 		},
