@@ -7,27 +7,28 @@
 		},
 		"vmSize": {
 			"type": "string",
-			"defaultValue": "Standard_DS1",
+			"defaultValue": "Standard_D11_V2",
 			"allowedValues": ["Standard_DS1",
 			"Standard_DS2",
 			"Standard_DS3",
 			"Standard_D1_V2",
 			"Standard_D2_V2",
-			"Standard_D3_V2"],
+			"Standard_D3_V2",
+			"Standard_D11_V2"],
 			"metadata": {
 				"description": "Azure VM Sizes. If you dont see a size you want, please check with your administrator."
 			}
 		},
 		"userImageStorageAccountName": {
 			"type": "string",
-			"defaultValue": "mayorhelimages",
+			"defaultValue": "mayocustomimages",
 			"metadata": {
 				"description": "This is the name of the your storage account"
 			}
 		},
 		"userImageStorageContainerName": {
 			"type": "string",
-			"defaultValue": "vhds",
+			"defaultValue": "images",
 			"metadata": {
 				"description": "This is the name of the container in your storage account"
 			}
@@ -59,6 +60,13 @@
 			"metadata": {
 				"description": "This is the OS that your VM will be running"
 			}
+		},
+		"sizeOfDataDiskInGB": {
+			"type": "string",
+			"defaultValue": "50",
+			"metadata": {
+				"description": "Size of each data disk in GB"
+			}
 		}
 	},
 	"variables": {
@@ -70,6 +78,7 @@
 		"subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
 		"vnetID": "[resourceId(variables('virtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
 		"networkSecurityGroupName": "[concat('mc', parameters('osType'), 'Default', toLower(parameters('vmName')),'NSG')]",
+		"dataDisk1VhdName": "[concat('http://',parameters('userImageStorageAccountName'),'.blob.core.windows.net/vhds/',parameters('vmName'),'dataDisk1.vhd')]",
 		"userImageName": "[concat('http://',parameters('userImageStorageAccountName'),'.blob.core.windows.net/',parameters('userImageStorageContainerName'),'/',parameters('userImageVhdName'))]",
 		"osDiskVhdName": "[concat('http://',parameters('userImageStorageAccountName'),'.blob.core.windows.net/vhds/',parameters('vmName'),'osDisk.vhd')]"
 	},
@@ -163,6 +172,15 @@
 				"adminPassword": "[parameters('adminPassword')]"
 			},
 			"storageProfile": {
+				"dataDisks": [{
+					"name": "datadisk1",
+					"diskSizeGB": "[parameters('sizeOfDataDiskInGB')]",
+					"lun": 0,
+					"vhd": {
+						"Uri": "[variables('dataDisk1VhdName')]"
+					},
+					"createOption": "Empty"
+				}],
 				"osDisk": {
 					"name": "[concat(parameters('vmName'),'-osDisk')]",
 					"osType": "[parameters('osType')]",
