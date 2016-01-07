@@ -7,10 +7,11 @@
 		},
 		"vmSize": {
 			"type": "string",
-			"defaultValue": "Standard_D11_V2",
+			"defaultValue": "Standard_DS11",
 			"allowedValues": ["Standard_DS1",
 			"Standard_DS2",
 			"Standard_DS3",
+			"Standard_DS11",
 			"Standard_D1_V2",
 			"Standard_D2_V2",
 			"Standard_D3_V2",
@@ -21,7 +22,7 @@
 		},
 		"userImageStorageAccountName": {
 			"type": "string",
-			"defaultValue": "mayocustomimages",
+			"defaultValue": "mayoimages",
 			"metadata": {
 				"description": "This is the name of the your storage account"
 			}
@@ -35,7 +36,7 @@
 		},
 		"userImageVhdName": {
 			"type": "string",
-			"defaultValue": "rhel72-azure.vhd",
+			"defaultValue": "rhel72-osazure.vhd",
 			"metadata": {
 				"description": "This is the name of the your customized VHD"
 			}
@@ -198,12 +199,6 @@
 				"networkInterfaces": [{
 					"id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
 				}]
-			},
-			"diagnosticsProfile": {
-				"bootDiagnostics": {
-					"enabled": "true",
-					"storageUri": "[concat('http://',parameters('userImageStorageAccountName'),'.blob.core.windows.net')]"
-				}
 			}
 		}
 	}]

@@ -6,7 +6,7 @@ qemu-img resize rhel72-azure.raw $rounded_size
 
 qemu-img convert -f raw -o subformat=fixed -O vpc rhel72-azure.raw rhel72-azure.vhd
 
-https://mayorhelimages.blob.core.windows.net/vhds
 
-Add-AzureVhd -Destination "https://mayorhelimages.blob.core.windows.net/vhds/rhel72-azure.vhd" -LocalFilePath 
-Add-AzureRMVhd -Destination "https://mayorhelimages.blob.core.windows.net/vhds/rhel72-azure.vhd" -LocalFilePath C:\install_images\images\rhel\rhel72-azure.vhd
+
+#Add-AzureVhd -Destination "https://mayorhelimages.blob.core.windows.net/vhds/rhel72-azure.vhd" -LocalFilePath 
+Add-AzureRMVhd -Destination "https://mayocustomimages.blob.core.windows.net/images/rhel72-azure.vhd" -LocalFilePath C:\install_images\images\rhel\rhel72-azure.vhd
