@@ -61,13 +61,6 @@
 			"metadata": {
 				"description": "This is the OS that your VM will be running"
 			}
-		},
-		"sizeOfDataDiskInGB": {
-			"type": "string",
-			"defaultValue": "50",
-			"metadata": {
-				"description": "Size of each data disk in GB"
-			}
 		}
 	},
 	"variables": {
@@ -79,7 +72,6 @@
 		"subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
 		"vnetID": "[resourceId(variables('virtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
 		"networkSecurityGroupName": "[concat('mc', parameters('osType'), 'Default', toLower(parameters('vmName')),'NSG')]",
-		"dataDisk1VhdName": "[concat('http://',parameters('userImageStorageAccountName'),'.blob.core.windows.net/vhds/',parameters('vmName'),'dataDisk1.vhd')]",
 		"userImageName": "[concat('http://',parameters('userImageStorageAccountName'),'.blob.core.windows.net/',parameters('userImageStorageContainerName'),'/',parameters('userImageVhdName'))]",
 		"osDiskVhdName": "[concat('http://',parameters('userImageStorageAccountName'),'.blob.core.windows.net/vhds/',parameters('vmName'),'osDisk.vhd')]"
 	},
@@ -145,15 +137,6 @@
 				"adminPassword": "[parameters('adminPassword')]"
 			},
 			"storageProfile": {
-				"dataDisks": [{
-					"name": "datadisk1",
-					"diskSizeGB": "[parameters('sizeOfDataDiskInGB')]",
-					"lun": 0,
-					"vhd": {
-						"Uri": "[variables('dataDisk1VhdName')]"
-					},
-					"createOption": "Empty"
-				}],
 				"osDisk": {
 					"name": "[concat(parameters('vmName'),'-osDisk')]",
 					"osType": "[parameters('osType')]",

@@ -7,8 +7,8 @@
 		},
 		"vmSize": {
 			"type": "string",
-			"defaultValue": "Standard_DS11",
-			"allowedValues": ["Standard_D2_V2",
+			"defaultValue": "Standard_D2_V2",
+			"allowedValues": ["Standard_DS1",
 			"Standard_DS2",
 			"Standard_DS3",
 			"Standard_DS11",
@@ -22,7 +22,6 @@
 		},
 		"userImageStorageAccountName": {
 			"type": "string",
-			"defaultValue": "mayoimages",
 			"metadata": {
 				"description": "This is the name of the your storage account"
 			}
@@ -36,7 +35,6 @@
 		},
 		"userImageVhdName": {
 			"type": "string",
-			"defaultValue": "rhel72-azure-50G.vhd",
 			"metadata": {
 				"description": "This is the name of the your customized VHD"
 			}

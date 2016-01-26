@@ -1,12 +1,16 @@
 MB=$((1024*1024))
-size=$(qemu-img info -f raw --output json "rhel72-azure.raw" | \
-         gawk 'match($0, /"virtual-size": ([0-9]+),/, val) {print val[1]}')
+size=$( /c/code/qemu-img/qemu-img.exe info -f raw --output json "rhel72-azure.vhd" | gawk 'match($0, /"virtual-size": ([0-9]+),/, val) {print val[1]}')
 rounded_size=$((($size/$MB + 1)*$MB))
-qemu-img resize rhel72-azure.raw $rounded_size
+/c/code/qemu-img/qemu-img.exe resize rhel72-azure.vhd $rounded_size
 
-qemu-img convert -f raw -o subformat=fixed -O vpc rhel72-azure.raw rhel72-azure.vhd
+\code\qemu-img\qemu-img.exe convert -f raw -o subformat=fixed -O vpc rhel72-osazure.raw rhel72-osazure.vhd
 
 
 
 #Add-AzureVhd -Destination "https://mayorhelimages.blob.core.windows.net/vhds/rhel72-azure.vhd" -LocalFilePath 
 Add-AzureRMVhd -Destination "https://mayocustomimages.blob.core.windows.net/images/rhel72-azure.vhd" -LocalFilePath C:\install_images\images\rhel\rhel72-azure.vhd
+
+MB=$((1024*1024))
+size=$(qemu-img info -f raw --output json "rhel72-osazure.raw" | gawk 'match($0, /"virtual-size": ([0-9]+),/, val) {print val[1]}')
+rounded_size=$((($size/$MB + 1)*$MB))
+qemu-img resize rhel72-osazure.raw $rounded_size
