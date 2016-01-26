@@ -84,8 +84,8 @@
 			"securityRules": [{
 				"name": "allow-all",
 				"properties": {
-					"description": "Allows ssh traffic",
-					"protocol": "Any",
+					"description": "Allows any traffic",
+					"protocol": "*",
 					"sourcePortRange": "*",
 					"destinationPortRange": "*",
 					"sourceAddressPrefix": "*",
