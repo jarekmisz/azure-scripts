@@ -11,9 +11,11 @@ size=$(qemu-img info -f raw --output json "rhel72-azure-50G.raw" | gawk 'match($
 rounded_size=$((($size/$MB + 1)*$MB))
 qemu-img resize rhel72-azure-50G.raw $rounded_size
 
+login-azurermaccount
+
 Add-AzureRmVhd -ResourceGroupName mayoimages -Destination https://mayoimages.blob.core.windows.net/images/rhel72-azure-50G.vhd -LocalFilePath H:\images\rhel\rhel72-azure-50G.vhd
 
-New-AzureRmResourceGroup 
+New-AzureRmResourceGroup -Name cliqrrg -Location "centralus"
 
 New-AzureRmResourceGroupDeployment -ResourceGroupName cliqrrg -Name CliqrAzureCco -Force -TemplateUri https://raw.githubusercontent.com/jarekmisz/azure-scripts/master/ExpressRoute/rhel7NoDataDiskVM.json -Debug
 

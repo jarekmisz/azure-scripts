@@ -22,7 +22,7 @@
 		},
 		"userImageStorageAccountName": {
 			"type": "string",
-			"defaultValue": "mayoimages",
+			"defaultValue": "mcredhatimagessa",
 			"metadata": {
 				"description": "This is the name of the your storage account"
 			}
@@ -36,7 +36,7 @@
 		},
 		"userImageVhdName": {
 			"type": "string",
-			"defaultValue": "rhel72-azure-50G.vhd",
+			"defaultValue": "rh67-azure.vhd",
 			"metadata": {
 				"description": "This is the name of the your customized VHD"
 			}
