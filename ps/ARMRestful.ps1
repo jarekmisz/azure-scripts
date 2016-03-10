@@ -9,7 +9,7 @@ $adalforms = "${env:ProgramFiles(x86)}\Microsoft SDKs\Azure\PowerShell\ServiceMa
 [System.Reflection.Assembly]::LoadFrom($adalforms)
 
 # Set Azure AD Tenant name
- 
+ http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=1783099
 $adTenant = "a25fff9c-3f63-4fb2-9a8a-d9bdd0321f9a"
 
 # Set well-known client ID for AzurePowerShell
