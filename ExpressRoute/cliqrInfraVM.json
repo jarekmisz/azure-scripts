@@ -7,15 +7,8 @@
 		},
 		"vmSize": {
 			"type": "string",
-			"defaultValue": "Standard_D311",
-			"allowedValues": ["Standard_D2_V2",
-			"Standard_DS2",
-			"Standard_DS3",
-			"Standard_DS11",
-			"Standard_D1_V2",
-			"Standard_D2_V2",
-			"Standard_D3_V2",
-			"Standard_D11_V2"],
+			"defaultValue": "Standard_D3_V2",
+			"allowedValues": ["Standard_D3_V2"],
 			"metadata": {
 				"description": "Azure VM Sizes. If you dont see a size you want, please check with your administrator."
 			}
@@ -36,7 +29,6 @@
 		},
 		"userImageVhdName": {
 			"type": "string",
-			"defaultValue": "rh67-azure.vhd",
 			"metadata": {
 				"description": "This is the name of the your customized VHD"
 			}
@@ -67,8 +59,8 @@
 		"location": "[resourceGroup().location]",
 		"nicName": "[concat('Nic', uniqueString(parameters('vmName'), resourceGroup().id))]",
 		"virtualNetworkResourceGroup": "ChicagoER_RG",
-		"virtualNetworkName": "TestVnet",
-		"subnetName": "Subnet-1",
+		"virtualNetworkName": "ExRouteVnet",
+		"subnetName": "ExRouteSubnet",
 		"subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
 		"vnetID": "[resourceId(variables('virtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
 		"networkSecurityGroupName": "[concat('mc', parameters('osType'), 'Default', toLower(parameters('vmName')),'NSG')]",
